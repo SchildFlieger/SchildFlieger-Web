@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video Player | SchildFlieger</title>
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <!-- Externe Icons (FontAwesome) -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #000;
+        overflow: hidden;
+      }
+
+      .video-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #000;
+      }
+
+      .video-player {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .video-controls {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 20px;
+        background: linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 0.7) 0%,
+          rgba(0, 0, 0, 0) 100%
+        );
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: opacity 0.3s ease;
+        z-index: 10;
+      }
+
+      .controls-hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .back-button {
+        background-color: var(--primary);
+        color: #000;
+        border: none;
+        padding: 10px 20px;
+        border-radius: var(--radius);
+        font-family: "Oswald", sans-serif;
+        font-weight: 700;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .back-button:hover {
+        background-color: #fff;
+        box-shadow: 0 0 20px var(--primary-glow);
+      }
+
+      .play-pause-btn {
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid var(--primary);
+        color: var(--primary);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 16px;
+      }
+
+      .play-pause-btn:hover {
+        background: var(--primary);
+        color: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="video-container">
+      <video id="fullscreenVideo" class="video-player" autoplay muted controls>
+        <source src="assets/video/bedwarsvod.mp4" type="video/mp4" />
+        Ihr Browser unterstützt das Video-Tag nicht.
+      </video>
+
+      <div id="videoControls" class="video-controls">
+        <button id="backButton" class="back-button">
+          <i class="fas fa-arrow-left"></i> Zurück
+        </button>
+        <button id="playPauseBtn" class="play-pause-btn">
+          <i class="fas fa-pause"></i>
+        </button>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const video = document.getElementById("fullscreenVideo");
+        const controls = document.getElementById("videoControls");
+        const backButton = document.getElementById("backButton");
+        const playPauseBtn = document.getElementById("playPauseBtn");
+        const pauseIcon = '<i class="fas fa-pause"></i>';
+        const playIcon = '<i class="fas fa-play"></i>';
+
+        // Play video automatically
+        video.play();
+
+        // Handle autoplay policies
+        video.addEventListener("loadeddata", function () {
+          // Try to play the video
+          const playPromise = video.play();
+
+          if (playPromise !== undefined) {
+            playPromise
+              .then((_) => {
+                // Automatic playback started!
+              })
+              .catch((error) => {
+                // Auto-play was prevented
+                // Show paused UI
+                playPauseBtn.innerHTML = playIcon;
+              });
+          }
+        });
+
+        // Hide controls after 5 seconds
+        let controlsTimeout;
+
+        function hideControls() {
+          controlsTimeout = setTimeout(() => {
+            controls.classList.add("controls-hidden");
+          }, 5000);
+        }
+
+        function showControls() {
+          clearTimeout(controlsTimeout);
+          controls.classList.remove("controls-hidden");
+          hideControls();
+        }
+
+        // Initial hide timer
+        hideControls();
+
+        // Show controls on mouse move
+        document.addEventListener("mousemove", showControls);
+
+        // Show controls on spacebar press
+        document.addEventListener("keydown", function (e) {
+          if (e.code === "Space") {
+            e.preventDefault();
+            togglePlayPause();
+          }
+          showControls();
+        });
+
+        // Toggle play/pause
+        function togglePlayPause() {
+          if (video.paused) {
+            video.play();
+            playPauseBtn.innerHTML = pauseIcon;
+          } else {
+            video.pause();
+            playPauseBtn.innerHTML = playIcon;
+          }
+        }
+
+        // Event listeners
+        playPauseBtn.addEventListener("click", togglePlayPause);
+
+        video.addEventListener("play", function () {
+          playPauseBtn.innerHTML = pauseIcon;
+        });
+
+        video.addEventListener("pause", function () {
+          playPauseBtn.innerHTML = playIcon;
+        });
+
+        // Back button functionality
+        backButton.addEventListener("click", function () {
+          window.close(); // Try to close the window
+          // Fallback: redirect to main page
+          window.location.href = "index.html";
+        });
+      });
+    </script>
+  </body>
+</html>

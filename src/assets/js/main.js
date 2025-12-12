@@ -60,4 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
       header.style.borderBottomColor = "rgba(255,255,255,0.05)";
     }
   });
+
+  // --- Fullscreen Video Functionality ---
+  // Note: The fullscreen video is handled via the link to video-fullscreen.html
 });
