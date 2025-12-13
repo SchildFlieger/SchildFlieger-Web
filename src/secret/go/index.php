@@ -4,7 +4,7 @@ session_start();
 // Check if user is logged in
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     // Redirect to login page if not authenticated
-    header('Location: /src/secret/index.php');
+    header('Location: /secret/index.php');
     exit();
 }
 ?>
