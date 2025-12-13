@@ -45,16 +45,16 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     />
     
     <style>
-      /* Bright Green Theme */
+      /* Black Theme */
       :root {
-        --bg-dark: #0a2e0a; /* Dark green background */
-        --bg-card: #144f14; /* Medium green cards */
-        --primary: #00ff00; /* Bright green */
+        --bg-dark: #000000; /* Pure black background */
+        --bg-card: #1a1a1a; /* Dark gray cards */
+        --primary: #00ff00; /* Bright green accents */
         --primary-glow: rgba(0, 255, 0, 0.4); /* Bright green glow */
-        --accent: #e0ffe0; /* Light green text */
-        --text-main: #ccffcc; /* Softer green text */
-        --text-muted: #a0dba0; /* Muted green text */
-        --border-col: #00cc00; /* Green border */
+        --accent: #ffffff; /* White text */
+        --text-main: #e0e0e0; /* Light gray text */
+        --text-muted: #a0a0a0; /* Muted gray text */
+        --border-col: #333333; /* Dark gray border */
       }
       
       body {
@@ -100,11 +100,11 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
       }
       
       header {
-        background-color: rgba(10, 46, 10, 0.95);
+        background-color: rgba(0, 0, 0, 0.95);
       }
       
       footer {
-        background-color: #051e05;
+        background-color: #000000;
       }
     </style>
   </head>
