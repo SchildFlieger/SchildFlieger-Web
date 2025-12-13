@@ -33,12 +33,19 @@ $env = loadEnv(__DIR__ . '/.env');
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $enteredPassword = $_POST['password'] ?? '';
     $correctPassword = $env['ACCESS_PASSWORD'] ?? '';
+    $livePassword = $env['LIVE_PASSWORD'] ?? '';
 
     if ($enteredPassword === $correctPassword) {
         // Set session variable to indicate successful login
         $_SESSION['logged_in'] = true;
         // Redirect to protected page
         header('Location: /secret/go/index.php');
+        exit();
+    } elseif ($enteredPassword === $livePassword) {
+        // Set session variable to indicate successful login
+        $_SESSION['logged_in'] = true;
+        // Redirect to live page
+        header('Location: /secret/live/index.php');
         exit();
     } else {
         $error = 'Invalid password. Please try again.';
