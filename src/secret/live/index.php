@@ -117,7 +117,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 
         <nav>
           <ul class="nav-links">
-            <li><a href="/">Home</a></li>
+            <li><a href="/secret/live/index.php">Home</a></li>
           </ul>
         </nav>
 
