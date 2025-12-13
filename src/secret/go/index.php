@@ -10,7 +10,7 @@ if (isset($_GET['logout']) && $_GET['logout'] === 'true') {
     session_destroy();
     
     // Redirect to login page
-    header('Location: /src/secret/index.php');
+    header('Location: /');
     exit();
 }
 
@@ -63,7 +63,6 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     
     <p>This is a sample protected page that can only be accessed after successful authentication.</p>
     
-    <a href="/secret/index.php">Back to Login</a>
     <a href="?logout=true" style="margin-left: 20px; background-color: #dc3545; color: white; padding: 10px 20px; text-decoration: none; border-radius: 3px;">Logout</a>
 </body>
 </html>
