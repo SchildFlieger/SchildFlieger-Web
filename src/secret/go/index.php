@@ -43,6 +43,70 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Oswald:wght@500;700&display=swap"
       rel="stylesheet"
     />
+    
+    <style>
+      /* Bright Green Theme */
+      :root {
+        --bg-dark: #0a2e0a; /* Dark green background */
+        --bg-card: #144f14; /* Medium green cards */
+        --primary: #00ff00; /* Bright green */
+        --primary-glow: rgba(0, 255, 0, 0.4); /* Bright green glow */
+        --accent: #e0ffe0; /* Light green text */
+        --text-main: #ccffcc; /* Softer green text */
+        --text-muted: #a0dba0; /* Muted green text */
+        --border-col: #00cc00; /* Green border */
+      }
+      
+      body {
+        background-color: var(--bg-dark);
+        color: var(--text-main);
+      }
+      
+      .hero {
+        background: radial-gradient(
+          circle at top center,
+          rgba(0, 255, 0, 0.1),
+          transparent 60%
+        );
+      }
+      
+      .card {
+        background-color: var(--bg-card);
+        border: 1px solid var(--border-col);
+      }
+      
+      .btn-primary {
+        background-color: var(--primary);
+        color: #000;
+        border-color: var(--primary);
+      }
+      
+      .btn-primary:hover {
+        background-color: transparent;
+        color: var(--primary);
+        box-shadow: 0 0 20px var(--primary-glow);
+      }
+      
+      .btn-accent {
+        background-color: transparent;
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+      
+      .btn-accent:hover {
+        background-color: var(--primary);
+        color: #000;
+        box-shadow: 0 0 20px var(--primary-glow);
+      }
+      
+      header {
+        background-color: rgba(10, 46, 10, 0.95);
+      }
+      
+      footer {
+        background-color: #051e05;
+      }
+    </style>
   </head>
   <body>
     <!-- Header / Navigation -->
