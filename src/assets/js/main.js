@@ -88,17 +88,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Fetch Twitch stream status
+  // Fetch Twitch stream status - simplified version
   async function fetchTwitchStatus() {
     try {
-      // Using a free service to check Twitch status without API key
-      // In a production environment, you would use the official Twitch API
+      console.log("Attempting to fetch Twitch status...");
+
+      // Attempt to fetch status - if it fails, we'll default to offline
       const response = await fetch(
-        "https://decapi.me/twitch/status/schildflieger"
+        "https://decapi.me/twitch/status/schildflieger",
+        { mode: "cors" }
       );
 
       if (response.ok) {
         const data = await response.text();
+        console.log("Twitch status response:", data);
+
         // DecAPI returns "Username is offline" or "Username is streaming: Title (Game) for HH:MM:SS with N viewers"
         const isLive = !data.includes("is offline");
 
@@ -113,19 +117,26 @@ document.addEventListener("DOMContentLoaded", () => {
           updateTwitchStatus(false);
         }
       } else {
-        throw new Error("Failed to fetch status");
+        // If response is not ok, default to offline
+        updateTwitchStatus(false);
       }
     } catch (error) {
-      console.error("Error fetching Twitch status:", error);
-      // Fallback to offline status
+      console.warn(
+        "Error fetching Twitch status (this is common due to CORS/security):",
+        error
+      );
+      // Default to offline status when fetch fails (which is common)
       updateTwitchStatus(false);
     }
   }
 
   // Initial fetch
   if (twitchStatusElement) {
-    fetchTwitchStatus();
-    // Update every 5 minutes
-    setInterval(fetchTwitchStatus, 5 * 60 * 1000);
+    // Add a small delay to ensure DOM is fully loaded
+    setTimeout(() => {
+      fetchTwitchStatus();
+      // Update every 5 minutes
+      setInterval(fetchTwitchStatus, 5 * 60 * 1000);
+    }, 1000);
   }
 });

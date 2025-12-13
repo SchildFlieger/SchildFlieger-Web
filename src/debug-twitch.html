@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Twitch Status Debug</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #0a0a0a;
+        color: #e0e0e0;
+        padding: 20px;
+      }
+      .status-indicator {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 2px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .status-live {
+        background-color: rgba(149, 56, 255, 0.2);
+        color: #9538ff;
+        border: 1px solid #9538ff;
+      }
+      .status-offline {
+        background-color: rgba(255, 136, 0, 0.2);
+        color: #ff8800;
+        border: 1px solid #ff8800;
+      }
+      .status-loading {
+        background-color: rgba(158, 158, 158, 0.2);
+        color: #9e9e9e;
+        border: 1px solid #9e9e9e;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Twitch Status Debug Page</h1>
+    <div>
+      <h2>Status Indicator:</h2>
+      <span id="twitch-status" class="status-indicator status-loading"
+        >Status wird geladen...</span
+      >
+    </div>
+
+    <div style="margin-top: 20px">
+      <button onclick="testFetch()">Test Fetch</button>
+      <button onclick="setLive()">Set Live</button>
+      <button onclick="setOffline()">Set Offline</button>
+    </div>
+
+    <div style="margin-top: 20px">
+      <h3>Console Output:</h3>
+      <pre id="console-output"></pre>
+    </div>
+
+    <script>
+      const twitchStatusElement = document.getElementById("twitch-status");
+      const consoleOutput = document.getElementById("console-output");
+
+      function log(message) {
+        console.log(message);
+        consoleOutput.textContent += message + "\n";
+      }
+
+      // Function to update Twitch status display
+      function updateTwitchStatus(isLive, viewerCount = 0) {
+        if (twitchStatusElement) {
+          twitchStatusElement.classList.remove(
+            "status-loading",
+            "status-live",
+            "status-offline"
+          );
+
+          if (isLive) {
+            twitchStatusElement.textContent = `LIVE${
+              viewerCount ? " | " + viewerCount + " Zuschauer" : ""
+            }`;
+            twitchStatusElement.classList.add("status-live");
+          } else {
+            twitchStatusElement.textContent = "Offline";
+            twitchStatusElement.classList.add("status-offline");
+          }
+        }
+      }
+
+      // Test fetch function
+      async function testFetch() {
+        log("Testing fetch...");
+        try {
+          log("Attempting to fetch from decapi.me...");
+          const response = await fetch(
+            "https://decapi.me/twitch/status/schildflieger",
+            { mode: "cors" }
+          );
+
+          log("Response status: " + response.status);
+
+          if (response.ok) {
+            const data = await response.text();
+            log("Response data: " + data);
+
+            // DecAPI returns "Username is offline" or "Username is streaming: Title (Game) for HH:MM:SS with N viewers"
+            const isLive = !data.includes("is offline");
+            log("Is live: " + isLive);
+
+            if (isLive) {
+              // Extract viewer count if available
+              const viewerMatch = data.match(/with ([0-9,]+) viewers/);
+              const viewers = viewerMatch
+                ? parseInt(viewerMatch[1].replace(",", ""))
+                : 0;
+              updateTwitchStatus(true, viewers);
+            } else {
+              updateTwitchStatus(false);
+            }
+          } else {
+            throw new Error("Failed to fetch status: " + response.status);
+          }
+        } catch (error) {
+          log("Error: " + error.message);
+          updateTwitchStatus(false);
+        }
+      }
+
+      function setLive() {
+        updateTwitchStatus(true, 42);
+      }
+
+      function setOffline() {
+        updateTwitchStatus(false);
+      }
+    </script>
+  </body>
+</html>

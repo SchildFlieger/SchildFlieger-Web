@@ -366,6 +366,27 @@ header {
   border: 1px solid var(--text-muted);
 }
 
+.twitch-link {
+  display: block;
+  margin-top: 10px;
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.twitch-link:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.status-note {
+  display: block;
+  margin-top: 5px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
 .card-link {
   color: var(--primary);
   font-weight: 700;
