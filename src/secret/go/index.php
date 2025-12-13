@@ -21,48 +21,169 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     exit();
 }
 ?>
-
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Protected Area</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            text-align: center;
-        }
-        .welcome {
-            background-color: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-            padding: 20px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-        a {
-            display: inline-block;
-            margin-top: 20px;
-            color: #007cba;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body>
-    <div class="welcome">
-        <h1>Welcome to the Protected Area!</h1>
-        <p>You have successfully authenticated and can now access this secure content.</p>
-    </div>
-    
-    <p>This is a sample protected page that can only be accessed after successful authentication.</p>
-    
-    <a href="?logout=true" style="margin-left: 20px; background-color: #dc3545; color: white; padding: 10px 20px; text-decoration: none; border-radius: 3px;">Logout</a>
-</body>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SchildFlieger | Protected Area</title>
+    <meta
+      name="description"
+      content="Protected content area for SchildFlieger."
+    />
+    <link rel="stylesheet" href="/assets/css/main.css" />
+    <!-- Externe Icons (FontAwesome) -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Google Fonts: 'Oswald' für Überschriften (Gaming-Look), 'Inter' für Text -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Oswald:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Header / Navigation -->
+    <header>
+      <div class="container nav-container">
+        <!-- Logo Text im Stil des Logos -->
+        <a href="/" class="logo">Schild<span>Flieger</span></a>
+
+        <nav>
+          <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+          </ul>
+        </nav>
+
+        <div class="hamburger">
+          <i class="fas fa-bars"></i>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+      <!-- Fullscreen Background Video -->
+      <video autoplay muted loop playsinline class="background-video">
+        <source src="/assets/video/bedwarsvod.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      <div class="container hero-content reveal">
+        <h4>Protected Area</h4>
+        <h1>Welcome,<br /><span class="highlight">Authorized User</span></h1>
+        <p class="hero-subtitle">
+          You have successfully authenticated and can now access this secure content.
+        </p>
+        <div class="hero-buttons">
+          <a href="?logout=true" class="btn btn-accent"
+            ><i class="fas fa-sign-out-alt"></i> Logout</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- Content Section -->
+    <section id="content" class="section-padding">
+      <div class="container">
+        <h2 class="section-title">Secure Content</h2>
+        <p style="color: var(--text-muted)">
+          This is a sample protected page that can only be accessed after successful authentication.
+        </p>
+
+        <div class="grid-3">
+          <!-- Content Card 1 -->
+          <div class="card reveal">
+            <div class="card-icon code-icon">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <h3>Access Granted</h3>
+            <p>
+              You have successfully bypassed security measures and gained access to this exclusive area.
+            </p>
+            <a href="#" class="card-link"
+              >Learn More <i class="fas fa-arrow-right"></i
+            ></a>
+          </div>
+
+          <!-- Content Card 2 -->
+          <div class="card reveal">
+            <div class="card-icon code-icon">
+              <i class="fas fa-user-secret"></i>
+            </div>
+            <h3>User Authentication</h3>
+            <p>
+              Your credentials have been verified through our secure authentication system.
+            </p>
+            <a href="#" class="card-link"
+              >View Details <i class="fas fa-arrow-right"></i
+            ></a>
+          </div>
+
+          <!-- Content Card 3 -->
+          <div class="card reveal">
+            <div class="card-icon code-icon">
+              <i class="fas fa-lock-open"></i>
+            </div>
+            <h3>Session Security</h3>
+            <p>
+              Your session is encrypted and secured with industry-standard protocols.
+            </p>
+            <a href="#" class="card-link"
+              >Security Info <i class="fas fa-arrow-right"></i
+            ></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <a href="/" class="logo">Schild<span>Flieger</span></a>
+          <div class="social-row">
+            <a href="https://twitch.tv/schildflieger" class="social-btn"
+              ><i class="fab fa-twitch"></i
+            ></a>
+            <a href="https://www.youtube.com/@SchildFlieger" class="social-btn"
+              ><i class="fab fa-youtube"></i
+            ></a>
+            <a href="https://github.com/SchildFlieger" class="social-btn"
+              ><i class="fab fa-github"></i
+            ></a>
+          </div>
+        </div>
+        <div class="copyright">
+          <a href="https://schildflieger.hmt-network.de/"
+            >SchildFlieger Website</a
+          >
+          © 2025 by
+          <a href="https://schildflieger.hmt-network.de/">SchildFlieger</a> is
+          licensed under
+          <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+            >CC BY-NC-SA 4.0</a
+          ><img
+            src="https://mirrors.creativecommons.org/presskit/icons/cc.svg"
+            alt=""
+            style="max-width: 1em; max-height: 1em; margin-left: 0.2em"
+          /><img
+            src="https://mirrors.creativecommons.org/presskit/icons/by.svg"
+            alt=""
+            style="max-width: 1em; max-height: 1em; margin-left: 0.2em"
+          /><img
+            src="https://mirrors.creativecommons.org/presskit/icons/nc.svg"
+            alt=""
+            style="max-width: 1em; max-height: 1em; margin-left: 0.2em"
+          /><img
+            src="https://mirrors.creativecommons.org/presskit/icons/sa.svg"
+            alt=""
+            style="max-width: 1em; max-height: 1em; margin-left: 0.2em"
+          />
+        </div>
+      </div>
+    </footer>
+    <script src="/assets/js/main.js"></script>
+  </body>
 </html>
