@@ -45,16 +45,16 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     />
     
     <style>
-      /* Purple Theme for Live Area */
+      /* Black Theme for Live Area */
       :root {
-        --bg-dark: #1a001a; /* Dark purple background */
-        --bg-card: #2a0a2a; /* Medium purple cards */
+        --bg-dark: #000000; /* Pure black background */
+        --bg-card: #1a1a1a; /* Dark gray cards */
         --primary: #9933ff; /* Purple accent */
         --primary-glow: rgba(153, 51, 255, 0.4); /* Purple glow */
-        --accent: #f0e6ff; /* Light purple text */
-        --text-main: #e0ccff; /* Softer purple text */
-        --text-muted: #b8a0db; /* Muted purple text */
-        --border-col: #6600cc; /* Purple border */
+        --accent: #ffffff; /* White text */
+        --text-main: #e0e0e0; /* Light gray text */
+        --text-muted: #a0a0a0; /* Muted gray text */
+        --border-col: #333333; /* Dark gray border */
       }
       
       body {
@@ -100,11 +100,11 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
       }
       
       header {
-        background-color: rgba(26, 0, 26, 0.95);
+        background-color: rgba(0, 0, 0, 0.95);
       }
       
       footer {
-        background-color: #120012;
+        background-color: #000000;
       }
     </style>
   </head>
