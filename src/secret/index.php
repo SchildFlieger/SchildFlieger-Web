@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Set session variable to indicate successful login
         $_SESSION['logged_in'] = true;
         // Redirect to protected page
-        header('Location: /src/secret/go/index.php');
+        header('Location: /secret/go/index.php');
         exit();
     } else {
         $error = 'Invalid password. Please try again.';
