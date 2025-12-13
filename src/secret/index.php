@@ -38,14 +38,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($enteredPassword === $correctPassword) {
         // Set session variable to indicate successful login
         $_SESSION['logged_in'] = true;
-        // Redirect to protected page
-        header('Location: /secret/go/index.php');
+        // Redirect to protected page or stored destination
+        $redirect_url = isset($_SESSION['redirect_after_login']) ? $_SESSION['redirect_after_login'] : '/secret/go/index.php';
+        unset($_SESSION['redirect_after_login']);
+        header('Location: ' . $redirect_url);
         exit();
     } elseif ($enteredPassword === $livePassword) {
         // Set session variable to indicate successful login
         $_SESSION['logged_in'] = true;
-        // Redirect to live page
-        header('Location: /secret/live/index.php');
+        // Redirect to live page or stored destination
+        $redirect_url = isset($_SESSION['redirect_after_login']) ? $_SESSION['redirect_after_login'] : '/secret/live/index.php';
+        unset($_SESSION['redirect_after_login']);
+        header('Location: ' . $redirect_url);
         exit();
     } else {
         $error = 'Invalid password. Please try again.';
