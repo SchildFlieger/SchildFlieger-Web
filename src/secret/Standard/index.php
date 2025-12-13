@@ -16,6 +16,8 @@ if (isset($_GET['logout']) && $_GET['logout'] === 'true') {
 
 // Check if user is logged in
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    // Store the intended destination in session
+    $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
     // Redirect to login page if not authenticated
     header('Location: /secret/index.php');
     exit();
@@ -26,7 +28,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SchildFlieger | Protected Area</title>
+    <title>SchildFlieger | Standard Area</title>
     <meta
       name="description"
       content="Protected content area for SchildFlieger."
@@ -135,7 +137,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         Your browser does not support the video tag.
       </video>
       <div class="container hero-content reveal">
-        <h4>Protected Area</h4>
+        <h4>Standard Area</h4>
         <h1>Welcome,<br /><span class="highlight">Authorized User</span></h1>
         <p class="hero-subtitle">
           You have successfully authenticated and can now access this secure content.
