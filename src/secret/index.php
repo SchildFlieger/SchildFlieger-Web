@@ -34,13 +34,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $enteredPassword = $_POST['password'] ?? '';
     $correctPassword = $env['ACCESS_PASSWORD'] ?? '';
     $livePassword = $env['LIVE_PASSWORD'] ?? '';
-    $funnyVideosPassword = $env['FUNNY_VIDEOS_PASSWORD'] ?? '';
 
     if ($enteredPassword === $correctPassword) {
         // Set session variable to indicate successful login
         $_SESSION['logged_in'] = true;
         // Store the intended destination in session
-        $redirect_url = isset($_SESSION['redirect_after_login']) ? $_SESSION['redirect_after_login'] : '/secret/Standard/index.php';
+        $redirect_url = isset($_SESSION['redirect_after_login']) ? $_SESSION['redirect_after_login'] : '/secret/funnyvideos/index.php';
         unset($_SESSION['redirect_after_login']);
         header('Location: ' . $redirect_url);
         exit();
@@ -49,14 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['logged_in'] = true;
         // Store the intended destination in session
         $redirect_url = isset($_SESSION['redirect_after_login']) ? $_SESSION['redirect_after_login'] : '/secret/live/index.php';
-        unset($_SESSION['redirect_after_login']);
-        header('Location: ' . $redirect_url);
-        exit();
-    } elseif ($enteredPassword === $funnyVideosPassword) {
-        // Set session variable to indicate successful login
-        $_SESSION['logged_in'] = true;
-        // Store the intended destination in session
-        $redirect_url = isset($_SESSION['redirect_after_login']) ? $_SESSION['redirect_after_login'] : '/secret/funnyvideos/index.php';
         unset($_SESSION['redirect_after_login']);
         header('Location: ' . $redirect_url);
         exit();

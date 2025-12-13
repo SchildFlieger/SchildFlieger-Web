@@ -213,6 +213,44 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
       .hidden {
         display: none;
       }
+      
+      /* Upload Form Styles */
+      .upload-form {
+        background-color: var(--bg-card);
+        border: 1px solid var(--border-col);
+        border-radius: var(--radius);
+        padding: 20px;
+        margin: 20px 0;
+      }
+      
+      .upload-form h3 {
+        color: var(--accent);
+        margin-top: 0;
+      }
+      
+      .form-group {
+        margin-bottom: 15px;
+      }
+      
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--text-main);
+      }
+      
+      .form-group input, .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid var(--border-col);
+        border-radius: var(--radius);
+        background-color: #0a0a0a;
+        color: var(--text-main);
+      }
+      
+      .form-group textarea {
+        min-height: 100px;
+        resize: vertical;
+      }
     </style>
   </head>
   <body>
@@ -243,6 +281,28 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
           A collection of funny moments captured with friends.
         </p>
         
+        <!-- Upload Form -->
+        <div class="upload-form">
+          <h3>Upload New Video</h3>
+          <form id="uploadForm">
+            <div class="form-group">
+              <label for="videoName">Your Name:</label>
+              <input type="text" id="videoName" name="videoName" required>
+            </div>
+            <div class="form-group">
+              <label for="videoFile">Select Video:</label>
+              <input type="file" id="videoFile" name="videoFile" accept="video/*" required>
+            </div>
+            <div class="form-group">
+              <label for="videoDescription">Description:</label>
+              <textarea id="videoDescription" name="videoDescription" placeholder="Describe the funny moment..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-upload"></i> Upload Video
+            </button>
+          </form>
+        </div>
+        
         <div class="mode-toggle">
           <button id="toggleMode" class="btn btn-primary">
             <i class="fas fa-exchange-alt"></i> Switch to TikTok Mode
@@ -256,13 +316,13 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <div class="video-item">
               <div class="video-container">
                 <video controls>
-                  <source src="/assets/video/sample1.mp4" type="video/mp4">
+                  <source src="/assets/videos/sample1.mp4" type="video/mp4">
                   Your browser does not support the video tag.
                 </video>
               </div>
               <div class="video-info">
-                <h3>Beach Fun</h3>
-                <p>Playing volleyball at the beach</p>
+                <h3>Max Mustermann</h3>
+                <p>Beach volleyball fail</p>
               </div>
             </div>
             
@@ -270,13 +330,13 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <div class="video-item">
               <div class="video-container">
                 <video controls>
-                  <source src="/assets/video/sample2.mp4" type="video/mp4">
+                  <source src="/assets/videos/sample2.mp4" type="video/mp4">
                   Your browser does not support the video tag.
                 </video>
               </div>
               <div class="video-info">
-                <h3>Camping Trip</h3>
-                <p>Trying to start a fire in the rain</p>
+                <h3>Erika Musterfrau</h3>
+                <p>Camping in the rain</p>
               </div>
             </div>
             
@@ -284,13 +344,13 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <div class="video-item">
               <div class="video-container">
                 <video controls>
-                  <source src="/assets/video/sample3.mp4" type="video/mp4">
+                  <source src="/assets/videos/sample3.mp4" type="video/mp4">
                   Your browser does not support the video tag.
                 </video>
               </div>
               <div class="video-info">
-                <h3>Birthday Surprise</h3>
-                <p>Planning a surprise party</p>
+                <h3>John Doe</h3>
+                <p>Birthday surprise gone wrong</p>
               </div>
             </div>
             
@@ -298,41 +358,13 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <div class="video-item">
               <div class="video-container">
                 <video controls>
-                  <source src="/assets/video/sample4.mp4" type="video/mp4">
+                  <source src="/assets/videos/sample4.mp4" type="video/mp4">
                   Your browser does not support the video tag.
                 </video>
               </div>
               <div class="video-info">
-                <h3>Road Trip</h3>
-                <p>Getting lost and finding our way back</p>
-              </div>
-            </div>
-            
-            <!-- Video Item 5 -->
-            <div class="video-item">
-              <div class="video-container">
-                <video controls>
-                  <source src="/assets/video/sample5.mp4" type="video/mp4">
-                  Your browser does not support the video tag.
-                </video>
-              </div>
-              <div class="video-info">
-                <h3>BBQ Night</h3>
-                <p>Burning everything except the sausages</p>
-              </div>
-            </div>
-            
-            <!-- Video Item 6 -->
-            <div class="video-item">
-              <div class="video-container">
-                <video controls>
-                  <source src="/assets/video/sample6.mp4" type="video/mp4">
-                  Your browser does not support the video tag.
-                </video>
-              </div>
-              <div class="video-info">
-                <h3>Karaoke Night</h3>
-                <p>Singing like rockstars (badly)</p>
+                <h3>Jane Smith</h3>
+                <p>Road trip navigation</p>
               </div>
             </div>
           </div>
@@ -342,13 +374,13 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         <div id="tiktokMode" class="tiktok-mode hidden">
           <div class="tiktok-video-container">
             <video id="tiktokVideo" controls>
-              <source src="/assets/video/sample1.mp4" type="video/mp4">
+              <source src="/assets/videos/sample1.mp4" type="video/mp4">
               Your browser does not support the video tag.
             </video>
           </div>
           <div class="tiktok-video-info">
-            <h3 id="tiktokTitle">Beach Fun</h3>
-            <p id="tiktokDescription">Playing volleyball at the beach</p>
+            <h3 id="tiktokTitle">Max Mustermann</h3>
+            <p id="tiktokDescription">Beach volleyball fail</p>
           </div>
           <div class="navigation-buttons">
             <button id="prevVideo" class="btn btn-accent">
@@ -429,37 +461,30 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
       const prevButton = document.getElementById('prevVideo');
       const nextButton = document.getElementById('nextVideo');
       
+      // Upload form
+      const uploadForm = document.getElementById('uploadForm');
+      
       // Video data
       const videos = [
         {
-          src: '/assets/video/sample1.mp4',
-          title: 'Beach Fun',
-          description: 'Playing volleyball at the beach'
+          src: '/assets/videos/sample1.mp4',
+          title: 'Max Mustermann',
+          description: 'Beach volleyball fail'
         },
         {
-          src: '/assets/video/sample2.mp4',
-          title: 'Camping Trip',
-          description: 'Trying to start a fire in the rain'
+          src: '/assets/videos/sample2.mp4',
+          title: 'Erika Musterfrau',
+          description: 'Camping in the rain'
         },
         {
-          src: '/assets/video/sample3.mp4',
-          title: 'Birthday Surprise',
-          description: 'Planning a surprise party'
+          src: '/assets/videos/sample3.mp4',
+          title: 'John Doe',
+          description: 'Birthday surprise gone wrong'
         },
         {
-          src: '/assets/video/sample4.mp4',
-          title: 'Road Trip',
-          description: 'Getting lost and finding our way back'
-        },
-        {
-          src: '/assets/video/sample5.mp4',
-          title: 'BBQ Night',
-          description: 'Burning everything except the sausages'
-        },
-        {
-          src: '/assets/video/sample6.mp4',
-          title: 'Karaoke Night',
-          description: 'Singing like rockstars (badly)'
+          src: '/assets/videos/sample4.mp4',
+          title: 'Jane Smith',
+          description: 'Road trip navigation'
         }
       ];
       
@@ -499,6 +524,25 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
       nextButton.addEventListener('click', function() {
         currentVideoIndex = (currentVideoIndex + 1) % videos.length;
         updateTiktokVideo();
+      });
+      
+      // Handle form submission (frontend only for demo)
+      uploadForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const videoName = document.getElementById('videoName').value;
+        const videoFile = document.getElementById('videoFile').files[0];
+        const videoDescription = document.getElementById('videoDescription').value;
+        
+        if (videoFile) {
+          // In a real implementation, you would send this to a server
+          alert(`Video uploaded successfully!\nName: ${videoName}\nDescription: ${videoDescription}\nFile: ${videoFile.name}`);
+          
+          // Reset form
+          uploadForm.reset();
+        } else {
+          alert('Please select a video file to upload.');
+        }
       });
     </script>
   </body>
