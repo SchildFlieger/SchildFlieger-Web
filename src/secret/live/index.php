@@ -16,6 +16,8 @@ if (isset($_GET['logout']) && $_GET['logout'] === 'true') {
 
 // Check if user is logged in
 if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
+    // Store the intended destination in session
+    $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
     // Redirect to login page if not authenticated
     header('Location: /secret/index.php');
     exit();
@@ -117,7 +119,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 
         <nav>
           <ul class="nav-links">
-            <li><a href="/secret/live/index.php">Home</a></li>
+            <li><a href="/">Home</a></li>
           </ul>
         </nav>
 

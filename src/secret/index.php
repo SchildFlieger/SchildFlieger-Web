@@ -38,15 +38,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($enteredPassword === $correctPassword) {
         // Set session variable to indicate successful login
         $_SESSION['logged_in'] = true;
-        // Store the intended destination in session
-        $redirect_url = isset($_SESSION['redirect_after_login']) ? $_SESSION['redirect_after_login'] : '/secret/funnyvideos/index.php';
+        // Redirect to protected page or stored destination
+        $redirect_url = isset($_SESSION['redirect_after_login']) ? $_SESSION['redirect_after_login'] : '/secret/go/index.php';
         unset($_SESSION['redirect_after_login']);
         header('Location: ' . $redirect_url);
         exit();
     } elseif ($enteredPassword === $livePassword) {
         // Set session variable to indicate successful login
         $_SESSION['logged_in'] = true;
-        // Store the intended destination in session
+        // Redirect to live page or stored destination
         $redirect_url = isset($_SESSION['redirect_after_login']) ? $_SESSION['redirect_after_login'] : '/secret/live/index.php';
         unset($_SESSION['redirect_after_login']);
         header('Location: ' . $redirect_url);
