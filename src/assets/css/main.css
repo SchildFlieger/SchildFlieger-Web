@@ -334,6 +334,38 @@ header {
   flex-grow: 1;
 }
 
+.stream-status {
+  margin: 10px 0;
+}
+
+.status-indicator {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.status-live {
+  background-color: rgba(149, 56, 255, 0.2);
+  color: #9538ff;
+  border: 1px solid #9538ff;
+}
+
+.status-offline {
+  background-color: rgba(255, 136, 0, 0.2);
+  color: var(--primary);
+  border: 1px solid var(--primary);
+}
+
+.status-loading {
+  background-color: rgba(158, 158, 158, 0.2);
+  color: var(--text-muted);
+  border: 1px solid var(--text-muted);
+}
+
 .card-link {
   color: var(--primary);
   font-weight: 700;

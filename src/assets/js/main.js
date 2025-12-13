@@ -63,4 +63,69 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- Fullscreen Video Functionality ---
   // Note: The fullscreen video is handled via the link to video-fullscreen.html
+
+  // --- Twitch Stream Status ---
+  const twitchStatusElement = document.getElementById("twitch-status");
+
+  // Function to update Twitch status display
+  function updateTwitchStatus(isLive, viewerCount = 0) {
+    if (twitchStatusElement) {
+      twitchStatusElement.classList.remove(
+        "status-loading",
+        "status-live",
+        "status-offline"
+      );
+
+      if (isLive) {
+        twitchStatusElement.textContent = `LIVE${
+          viewerCount ? " | " + viewerCount + " Zuschauer" : ""
+        }`;
+        twitchStatusElement.classList.add("status-live");
+      } else {
+        twitchStatusElement.textContent = "Offline";
+        twitchStatusElement.classList.add("status-offline");
+      }
+    }
+  }
+
+  // Fetch Twitch stream status
+  async function fetchTwitchStatus() {
+    try {
+      // Using a free service to check Twitch status without API key
+      // In a production environment, you would use the official Twitch API
+      const response = await fetch(
+        "https://decapi.me/twitch/status/schildflieger"
+      );
+
+      if (response.ok) {
+        const data = await response.text();
+        // DecAPI returns "Username is offline" or "Username is streaming: Title (Game) for HH:MM:SS with N viewers"
+        const isLive = !data.includes("is offline");
+
+        if (isLive) {
+          // Extract viewer count if available
+          const viewerMatch = data.match(/with ([0-9,]+) viewers/);
+          const viewers = viewerMatch
+            ? parseInt(viewerMatch[1].replace(",", ""))
+            : 0;
+          updateTwitchStatus(true, viewers);
+        } else {
+          updateTwitchStatus(false);
+        }
+      } else {
+        throw new Error("Failed to fetch status");
+      }
+    } catch (error) {
+      console.error("Error fetching Twitch status:", error);
+      // Fallback to offline status
+      updateTwitchStatus(false);
+    }
+  }
+
+  // Initial fetch
+  if (twitchStatusElement) {
+    fetchTwitchStatus();
+    // Update every 5 minutes
+    setInterval(fetchTwitchStatus, 5 * 60 * 1000);
+  }
 });
