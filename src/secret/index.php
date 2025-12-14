@@ -38,6 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($enteredPassword === $correctPassword) {
         // Set session variable to indicate successful login
         $_SESSION['logged_in'] = true;
+        // Force session write to ensure it's saved before redirect
+        session_write_close();
         // Redirect to protected page or stored destination
         $redirect_url = isset($_SESSION['redirect_after_login']) ? $_SESSION['redirect_after_login'] : '/secret/go/index.php';
         unset($_SESSION['redirect_after_login']);
@@ -46,6 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($enteredPassword === $livePassword) {
         // Set session variable to indicate successful login
         $_SESSION['logged_in'] = true;
+        // Force session write to ensure it's saved before redirect
+        session_write_close();
         // Redirect to live page or stored destination
         $redirect_url = isset($_SESSION['redirect_after_login']) ? $_SESSION['redirect_after_login'] : '/secret/live/index.php';
         unset($_SESSION['redirect_after_login']);
