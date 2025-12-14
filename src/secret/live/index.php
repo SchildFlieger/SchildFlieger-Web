@@ -28,10 +28,10 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SchildFlieger | Live Area</title>
+    <title>SchildFlieger | Twitch Live Area</title>
     <meta
       name="description"
-      content="Live streaming area for SchildFlieger."
+      content="Twitch live streaming area for SchildFlieger."
     />
     <link rel="stylesheet" href="/assets/css/main.css" />
     <!-- Externe Icons (FontAwesome) -->
@@ -47,16 +47,16 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     />
     
     <style>
-      /* Black Theme for Live Area */
+      /* Twitch Theme for Live Area */
       :root {
         --bg-dark: #000000; /* Pure black background */
-        --bg-card: #1a1a1a; /* Dark gray cards */
-        --primary: #9933ff; /* Purple accent */
-        --primary-glow: rgba(153, 51, 255, 0.4); /* Purple glow */
+        --bg-card: #1f1f23; /* Twitch dark gray cards */
+        --primary: #9146ff; /* Twitch purple accent */
+        --primary-glow: rgba(145, 70, 255, 0.4); /* Twitch purple glow */
         --accent: #ffffff; /* White text */
-        --text-main: #e0e0e0; /* Light gray text */
-        --text-muted: #a0a0a0; /* Muted gray text */
-        --border-col: #333333; /* Dark gray border */
+        --text-main: #efeff1; /* Twitch light text */
+        --text-muted: #adadb8; /* Twitch muted text */
+        --border-col: #464646; /* Twitch border */
       }
       
       body {
@@ -108,6 +108,15 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
       footer {
         background-color: #000000;
       }
+      
+      /* Twitch Icon Styling */
+      .twitch-icon {
+        color: var(--primary);
+      }
+      
+      .twitch-icon i {
+        font-size: 2.5rem;
+      }
     </style>
   </head>
   <body>
@@ -137,10 +146,10 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         Your browser does not support the video tag.
       </video>
       <div class="container hero-content reveal">
-        <h4>Live Streaming Area</h4>
-        <h1>Welcome,<br /><span class="highlight">Live Viewer</span></h1>
+        <h4>Twitch Live Area</h4>
+        <h1>Welcome,<br /><span class="highlight">Streamer</span></h1>
         <p class="hero-subtitle">
-          You have successfully accessed the exclusive live streaming area.
+          You have successfully accessed the exclusive Twitch live streaming area.
         </p>
         <div class="hero-buttons">
           <a href="?logout=true" class="btn btn-accent"
@@ -153,50 +162,50 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     <!-- Content Section -->
     <section id="content" class="section-padding">
       <div class="container">
-        <h2 class="section-title">Live Content</h2>
+        <h2 class="section-title">Twitch Live Content</h2>
         <p style="color: var(--text-muted)">
-          Exclusive content for verified viewers.
+          Exclusive Twitch content for verified viewers.
         </p>
 
         <div class="grid-3">
           <!-- Live Stream Card -->
           <div class="card reveal">
-            <div class="card-icon code-icon">
-              <i class="fas fa-video"></i>
+            <div class="card-icon twitch-icon">
+              <i class="fab fa-twitch"></i>
             </div>
             <h3>Current Live Stream</h3>
             <p>
-              Access to the ongoing live stream with exclusive content.
+              Access to the ongoing Twitch live stream with exclusive content.
             </p>
-            <a href="#" class="card-link"
+            <a href="https://twitch.tv/schildflieger" target="_blank" class="card-link"
               >Watch Now <i class="fas fa-arrow-right"></i
             ></a>
           </div>
 
           <!-- Chat Card -->
           <div class="card reveal">
-            <div class="card-icon code-icon">
+            <div class="card-icon twitch-icon">
               <i class="fas fa-comments"></i>
             </div>
-            <h3>Exclusive Chat</h3>
+            <h3>Twitch Chat</h3>
             <p>
-              Join the private chat room for live stream viewers.
+              Join the exclusive Twitch chat for live stream viewers.
             </p>
-            <a href="#" class="card-link"
+            <a href="https://twitch.tv/schildflieger/chat" target="_blank" class="card-link"
               >Join Chat <i class="fas fa-arrow-right"></i
             ></a>
           </div>
 
           <!-- VODs Card -->
           <div class="card reveal">
-            <div class="card-icon code-icon">
+            <div class="card-icon twitch-icon">
               <i class="fas fa-history"></i>
             </div>
-            <h3>Past Broadcasts</h3>
+            <h3>Twitch VODs</h3>
             <p>
-              Access to archived live streams and special events.
+              Access to archived Twitch broadcasts and special events.
             </p>
-            <a href="#" class="card-link"
+            <a href="https://twitch.tv/schildflieger/videos" target="_blank" class="card-link"
               >View Archive <i class="fas fa-arrow-right"></i
             ></a>
           </div>
