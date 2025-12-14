@@ -40,9 +40,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['logged_in'] = true;
         // Force session write to ensure it's saved before redirect
         session_write_close();
-        // Redirect to protected page or stored destination
-        $redirect_url = isset($_SESSION['redirect_after_login']) ? $_SESSION['redirect_after_login'] : '/secret/go/index.php';
-        unset($_SESSION['redirect_after_login']);
+        
+        // For standard password, redirect to go area or stored destination
+        if (isset($_SESSION['redirect_after_login'])) {
+            $redirect_url = $_SESSION['redirect_after_login'];
+            unset($_SESSION['redirect_after_login']);
+        } else {
+            $redirect_url = '/secret/go/index.php';
+        }
+        
         header('Location: ' . $redirect_url);
         exit();
     } elseif ($enteredPassword === $livePassword) {
@@ -50,9 +56,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['logged_in'] = true;
         // Force session write to ensure it's saved before redirect
         session_write_close();
-        // Redirect to live page or stored destination
-        $redirect_url = isset($_SESSION['redirect_after_login']) ? $_SESSION['redirect_after_login'] : '/secret/live/index.php';
+        
+        // For live password, always redirect to live area regardless of stored destination
+        $redirect_url = '/secret/live/index.php';
         unset($_SESSION['redirect_after_login']);
+        
         header('Location: ' . $redirect_url);
         exit();
     } else {
