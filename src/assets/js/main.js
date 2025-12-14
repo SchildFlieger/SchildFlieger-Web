@@ -103,8 +103,19 @@ document.addEventListener("DOMContentLoaded", () => {
         const data = await response.text();
         console.log("Twitch status response:", data);
 
-        // DecAPI returns "Username is offline" or "Username is streaming: Title (Game) for HH:MM:SS with N viewers"
-        const isLive = !data.includes("is offline");
+        // DecAPI returns different responses when offline vs online
+        // When offline or user not found: short response with "is offline" or "User not found"
+        // When online: longer response with stream information
+        const isLive =
+          !data.includes("is offline") &&
+          !data.includes("User not found") &&
+          data.length > 50;
+        console.log(
+          "Parsed status - isLive:",
+          isLive,
+          "Data length:",
+          data.length
+        );
 
         if (isLive) {
           // Extract viewer count if available

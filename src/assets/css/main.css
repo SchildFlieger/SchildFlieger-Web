@@ -380,13 +380,6 @@ header {
   text-decoration: underline;
 }
 
-.status-note {
-  display: block;
-  margin-top: 5px;
-  color: var(--text-muted);
-  font-style: italic;
-}
-
 .card-link {
   color: var(--primary);
   font-weight: 700;

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Twitch Status Test</title>
+  </head>
+  <body>
+    <h1>Twitch Status Parsing Test</h1>
+    <div id="result"></div>
+
+    <script>
+      async function testStatus() {
+        const resultDiv = document.getElementById("result");
+
+        try {
+          // Test with your username
+          const response1 = await fetch(
+            "https://decapi.me/twitch/status/schildflieger"
+          );
+          const data1 = await response1.text();
+
+          resultDiv.innerHTML += `<h2>Your Status:</h2>`;
+          resultDiv.innerHTML += `<p>Data: "${data1}"</p>`;
+          resultDiv.innerHTML += `<p>Length: ${data1.length}</p>`;
+
+          // Parse status
+          const isLive1 =
+            !data1.includes("is offline") &&
+            !data1.includes("User not found") &&
+            data1.length > 50;
+          resultDiv.innerHTML += `<p>Is Live (parsed): ${isLive1}</p>`;
+
+          // Test with non-existent user
+          const response2 = await fetch(
+            "https://decapi.me/twitch/status/nonexistentuser12345"
+          );
+          const data2 = await response2.text();
+
+          resultDiv.innerHTML += `<h2>Non-existent User Status:</h2>`;
+          resultDiv.innerHTML += `<p>Data: "${data2}"</p>`;
+          resultDiv.innerHTML += `<p>Length: ${data2.length}</p>`;
+
+          // Parse status
+          const isLive2 =
+            !data2.includes("is offline") &&
+            !data2.includes("User not found") &&
+            data2.length > 50;
+          resultDiv.innerHTML += `<p>Is Live (parsed): ${isLive2}</p>`;
+        } catch (error) {
+          resultDiv.innerHTML += `<p>Error: ${error.message}</p>`;
+        }
+      }
+
+      testStatus();
+    </script>
+  </body>
+</html>
