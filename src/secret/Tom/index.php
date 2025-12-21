@@ -358,9 +358,12 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <p class="video-description">
               A special moment captured with Amena.
             </p>
-            <a href="/secret/Videos Passwort/Amena Tom.mp4" target="_blank" class="play-button">
-              <i class="fas fa-play-circle"></i> Watch Video
-            </a>
+            <div class="video-container">
+              <video controls>
+                <source src="/secret/Videos Passwort/Amena Tom.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
             <div class="video-meta">
               <span><i class="fas fa-file-video"></i> MP4</span>
               <span><i class="fas fa-clock"></i> 294 KB</span>
@@ -376,9 +379,9 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <p class="video-description">
               A memorable photo with Theo.
             </p>
-            <a href="/secret/Videos Passwort/Bild Theo.jpeg" target="_blank" class="play-button">
-              <i class="fas fa-eye"></i> View Image
-            </a>
+            <div class="video-container">
+              <img src="/secret/Videos Passwort/Bild Theo.jpeg" alt="Bild Theo" style="width: 100%; height: auto; border-radius: 8px;">
+            </div>
             <div class="video-meta">
               <span><i class="fas fa-file-image"></i> JPEG</span>
               <span><i class="fas fa-clock"></i> 96 KB</span>
@@ -394,9 +397,9 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <p class="video-description">
               A special picture of Tom.
             </p>
-            <a href="/secret/Videos Passwort/Bild Tom.jpeg" target="_blank" class="play-button">
-              <i class="fas fa-eye"></i> View Image
-            </a>
+            <div class="video-container">
+              <img src="/secret/Videos Passwort/Bild Tom.jpeg" alt="Bild Tom" style="width: 100%; height: auto; border-radius: 8px;">
+            </div>
             <div class="video-meta">
               <span><i class="fas fa-file-image"></i> JPEG</span>
               <span><i class="fas fa-clock"></i> 264 KB</span>
@@ -412,9 +415,12 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <p class="video-description">
               An exciting adventure with the French friends.
             </p>
-            <a href="/secret/Videos Passwort/Franzosen Tom.mp4" target="_blank" class="play-button">
-              <i class="fas fa-play-circle"></i> Watch Video
-            </a>
+            <div class="video-container">
+              <video controls>
+                <source src="/secret/Videos Passwort/Franzosen Tom.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
             <div class="video-meta">
               <span><i class="fas fa-file-video"></i> MP4</span>
               <span><i class="fas fa-clock"></i> 1.3 MB</span>
