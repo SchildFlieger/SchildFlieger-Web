@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $redirect_url = $_SESSION['redirect_after_login'];
             unset($_SESSION['redirect_after_login']);
         } else {
-            $redirect_url = '/secret/index.php';
+            $redirect_url = '/secret/go/index.php';
         }
         
         header('Location: ' . $redirect_url);
