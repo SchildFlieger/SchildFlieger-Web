@@ -34,6 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $enteredPassword = $_POST['password'] ?? '';
     $correctPassword = $env['ACCESS_PASSWORD'] ?? '';
     $livePassword = $env['LIVE_PASSWORD'] ?? '';
+    $tomPassword = $env['TOM_PASSWORD'] ?? '';
 
     if ($enteredPassword === $correctPassword) {
         // Set session variable to indicate successful login
@@ -59,6 +60,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // For live password, always redirect to live area regardless of stored destination
         $redirect_url = '/secret/live/index.php';
+        unset($_SESSION['redirect_after_login']);
+        
+        header('Location: ' . $redirect_url);
+        exit();
+    } elseif ($enteredPassword === $tomPassword) {
+        // Set session variable to indicate successful login
+        $_SESSION['logged_in'] = true;
+        // Force session write to ensure it's saved before redirect
+        session_write_close();
+        
+        // For Tom's password, always redirect to Tom's area
+        $redirect_url = '/secret/Tom/index.php';
         unset($_SESSION['redirect_after_login']);
         
         header('Location: ' . $redirect_url);
