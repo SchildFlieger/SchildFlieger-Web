@@ -213,7 +213,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         position: relative;
         width: 100%;
         height: 0;
-        padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+        padding-bottom: 177.78%; /* 9:16 Aspect Ratio (16/9 = 1.7778) */
         border-radius: 8px;
         overflow: hidden;
         margin-bottom: 20px;
@@ -228,6 +228,17 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         width: 100%;
         height: 100%;
         border: none;
+        object-fit: cover;
+      }
+      
+      .video-container img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+        object-fit: contain;
       }
       
       .video-title {
