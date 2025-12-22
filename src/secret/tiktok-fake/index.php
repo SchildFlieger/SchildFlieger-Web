@@ -366,12 +366,39 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         max-width: 100%;
         max-height: 100%;
         object-fit: contain;
+        transition: opacity 0.3s ease;
       }
       
       .tiktok-video {
         width: 100%;
         height: 100%;
         object-fit: contain;
+        transition: opacity 0.3s ease;
+      }
+      
+      .tiktok-media-container {
+        transition: transform 0.3s ease;
+      }
+      
+      /* Animation for swipe feedback */
+      .swipe-up {
+        animation: swipeUp 0.5s ease;
+      }
+      
+      .swipe-down {
+        animation: swipeDown 0.5s ease;
+      }
+      
+      @keyframes swipeUp {
+        0% { transform: translateY(0); }
+        50% { transform: translateY(-50px); }
+        100% { transform: translateY(0); }
+      }
+      
+      @keyframes swipeDown {
+        0% { transform: translateY(0); }
+        50% { transform: translateY(50px); }
+        100% { transform: translateY(0); }
       }
       
       .tiktok-controls {
@@ -911,6 +938,8 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         if (tiktokToggle) {
           tiktokToggle.addEventListener('click', function() {
             tiktokContainer.style.display = 'block';
+            // Prevent body scrolling when in TikTok mode
+            document.body.style.overflow = 'hidden';
             loadMedia(currentIndex);
           });
         }
@@ -919,6 +948,8 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         if (tiktokClose) {
           tiktokClose.addEventListener('click', function() {
             tiktokContainer.style.display = 'none';
+            // Restore body scrolling
+            document.body.style.overflow = '';
             // Pause any playing video
             const video = tiktokMediaContainer.querySelector('video');
             if (video) {
@@ -954,12 +985,22 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
           });
         }
         
-        // Double-click to like in TikTok mode
+        // Attach all event listeners for TikTok mode
         // We'll attach this after loading media since we need to attach to the actual media element
-        function attachDoubleClickHandler() {
+        function attachEventListeners() {
           // Remove any existing double-click handlers to prevent duplicates
           const existingVideos = tiktokMediaContainer.querySelectorAll('video');
           const existingImgs = tiktokMediaContainer.querySelectorAll('img');
+          
+          // Remove existing event listeners
+          tiktokMediaContainer.removeEventListener('touchstart', handleTouchStart);
+          tiktokMediaContainer.removeEventListener('touchmove', handleTouchMove);
+          tiktokMediaContainer.removeEventListener('touchend', handleTouchEnd);
+          tiktokMediaContainer.removeEventListener('mousedown', handleMouseDown);
+          tiktokMediaContainer.removeEventListener('mousemove', handleMouseMove);
+          tiktokMediaContainer.removeEventListener('mouseup', handleMouseUp);
+          tiktokMediaContainer.removeEventListener('mouseleave', handleMouseUp);
+          tiktokMediaContainer.removeEventListener('wheel', handleWheel);
           
           existingVideos.forEach(video => {
             video.removeEventListener('dblclick', handleDoubleClick);
@@ -970,9 +1011,18 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             img.removeEventListener('dblclick', handleDoubleClick);
             img.addEventListener('dblclick', handleDoubleClick);
           });
+          
+          // Add touch and mouse event listeners for swipe/scroll navigation
+          tiktokMediaContainer.addEventListener('touchstart', handleTouchStart);
+          tiktokMediaContainer.addEventListener('touchmove', handleTouchMove, { passive: false });
+          tiktokMediaContainer.addEventListener('touchend', handleTouchEnd);
+          tiktokMediaContainer.addEventListener('mousedown', handleMouseDown);
+          tiktokMediaContainer.addEventListener('mousemove', handleMouseMove);
+          tiktokMediaContainer.addEventListener('mouseup', handleMouseUp);
+          tiktokMediaContainer.addEventListener('mouseleave', handleMouseUp);
+          tiktokMediaContainer.addEventListener('wheel', handleWheel, { passive: false });
         }
         
-        // Pleas help me! I'm in danger!
         // Handler function for double-click events
         function handleDoubleClick(e) {
           e.preventDefault();
@@ -984,6 +1034,102 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             }, 500);
           }
           likeMediaTikTok(currentIndex);
+        }
+        
+        // Variables for swipe detection
+        let startY = 0;
+        let endY = 0;
+        const SWIPE_THRESHOLD = 30; // Minimum distance for swipe (lower for more sensitivity)
+        
+        // Touch event handlers for swipe navigation
+        function handleTouchStart(e) {
+          startY = e.touches[0].clientY;
+        }
+        
+        function handleTouchMove(e) {
+          // Prevent default behavior to avoid scrolling the page
+          e.preventDefault();
+        }
+        
+        function handleTouchEnd(e) {
+          endY = e.changedTouches[0].clientY;
+          handleSwipe();
+        }
+        
+        // Mouse event handlers for scroll navigation
+        let startMouseY = 0;
+        
+        function handleMouseDown(e) {
+          startMouseY = e.clientY;
+        }
+        
+        function handleMouseMove(e) {
+          // Only handle mouse move if mouse is down
+          if (startMouseY !== 0) {
+            e.preventDefault();
+          }
+        }
+        
+        function handleMouseUp(e) {
+          if (startMouseY !== 0) {
+            endY = e.clientY;
+            handleSwipe();
+            startMouseY = 0; // Reset
+          }
+        }
+        
+        function handleWheel(e) {
+          // Prevent default scrolling behavior
+          e.preventDefault();
+          
+          // Determine swipe direction based on wheel delta
+          if (e.deltaY > 0) {
+            // Scroll down - next item
+            currentIndex = (currentIndex + 1) % mediaFiles.length;
+            // Add visual feedback
+            tiktokMediaContainer.classList.add('swipe-up');
+            setTimeout(() => {
+              tiktokMediaContainer.classList.remove('swipe-up');
+            }, 500);
+            loadMedia(currentIndex);
+          } else if (e.deltaY < 0) {
+            // Scroll up - previous item
+            currentIndex = (currentIndex - 1 + mediaFiles.length) % mediaFiles.length;
+            // Add visual feedback
+            tiktokMediaContainer.classList.add('swipe-down');
+            setTimeout(() => {
+              tiktokMediaContainer.classList.remove('swipe-down');
+            }, 500);
+            loadMedia(currentIndex);
+          }
+        }
+        
+        // Handle swipe gesture
+        function handleSwipe() {
+          const deltaY = startY - endY;
+          
+          // Check if swipe distance exceeds threshold
+          if (Math.abs(deltaY) > SWIPE_THRESHOLD) {
+            if (deltaY > 0) {
+              // Swipe up - next item
+              currentIndex = (currentIndex + 1) % mediaFiles.length;
+              // Add visual feedback
+              tiktokMediaContainer.classList.add('swipe-up');
+              setTimeout(() => {
+                tiktokMediaContainer.classList.remove('swipe-up');
+              }, 500);
+              loadMedia(currentIndex);
+            } else {
+              // Swipe down - previous item
+              currentIndex = (currentIndex - 1 + mediaFiles.length) % mediaFiles.length;
+              // Add visual feedback
+              tiktokMediaContainer.classList.add('swipe-down');
+              setTimeout(() => {
+                tiktokMediaContainer.classList.remove('swipe-down');
+              }, 500);
+              loadMedia(currentIndex);
+            }
+          }
         }
         
         // Grid View Event Listeners
@@ -1002,34 +1148,42 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         function loadMedia(index) {
           const media = mediaFiles[index];
           if (tiktokMediaContainer) {
-            tiktokMediaContainer.innerHTML = '';
+            // Add a subtle animation effect when switching media
+            tiktokMediaContainer.style.opacity = '0';
             
-            if (media.type === 'video') {
-              const video = document.createElement('video');
-              video.className = 'tiktok-video';
-              video.controls = true;
-              video.autoplay = true;
-              video.loop = true;
+            setTimeout(() => {
+              tiktokMediaContainer.innerHTML = '';
               
-              const source = document.createElement('source');
-              source.src = '/secret/Videos Passwort/' + media.filename;
-              source.type = 'video/mp4';
+              if (media.type === 'video') {
+                const video = document.createElement('video');
+                video.className = 'tiktok-video';
+                video.controls = true;
+                video.autoplay = true;
+                video.loop = true;
+                
+                const source = document.createElement('source');
+                source.src = '/secret/Videos Passwort/' + media.filename;
+                source.type = 'video/mp4';
+                
+                video.appendChild(source);
+                tiktokMediaContainer.appendChild(video);
+              } else {
+                const img = document.createElement('img');
+                img.className = 'tiktok-media';
+                img.src = '/secret/Videos Passwort/' + media.filename;
+                img.alt = media.filename;
+                tiktokMediaContainer.appendChild(img);
+              }
               
-              video.appendChild(source);
-              tiktokMediaContainer.appendChild(video);
-            } else {
-              const img = document.createElement('img');
-              img.className = 'tiktok-media';
-              img.src = '/secret/Videos Passwort/' + media.filename;
-              img.alt = media.filename;
-              tiktokMediaContainer.appendChild(img);
-            }
-            
-            updateTikTokLikeCount();
-            // Update TikTok like button state based on current like count
-            updateTikTokLikeButtonState(media.filename);
-            // Attach double-click handler to the newly loaded media
-            attachDoubleClickHandler();
+              // Fade in the new media
+              tiktokMediaContainer.style.opacity = '1';
+              
+              updateTikTokLikeCount();
+              // Update TikTok like button state based on current like count
+              updateTikTokLikeButtonState(media.filename);
+              // Attach all event listeners to the newly loaded media
+              attachEventListeners();
+            }, 150); // Short delay for fade effect
           }
         }
         
