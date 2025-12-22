@@ -871,7 +871,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         let likes = {};
         
         // Initialize likes from server (shared between TikTok mode and grid view)
-        fetch('/secret/Tom/get_likes.php')
+        fetch('/secret/tiktok-fake/get_likes.php')
           .then(response => {
             console.log('Response status:', response.status);
             if (!response.ok) {
@@ -1076,7 +1076,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
           console.log('TikTok mode - Liking media:', media.filename);
           
           // Send like to server
-          const likeUrl = '/secret/Tom/like_handler.php';
+          const likeUrl = '/secret/tiktok-fake/like_handler.php';
           console.log('TikTok mode - Sending like request to:', likeUrl);
           fetch(likeUrl, {
             method: 'POST',
@@ -1181,7 +1181,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
           console.log('Grid view - Liking media:', filename);
           
           // Send like to server
-          const likeUrl = '/secret/Tom/like_handler.php';
+          const likeUrl = '/secret/tiktok-fake/like_handler.php';
           console.log('Grid view - Sending like request to:', likeUrl);
           fetch(likeUrl, {
             method: 'POST',
@@ -1301,7 +1301,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
       // Test function to check if like handler is accessible
       function testLikeHandler() {
         console.log('Testing like handler accessibility...');
-        fetch('/secret/Tom/like_handler.php', {
+        fetch('/secret/tiktok-fake/like_handler.php', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -1326,7 +1326,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
       // Test function to check if get_likes is accessible
       function testGetLikes() {
         console.log('Testing get_likes accessibility...');
-        fetch('/secret/Tom/get_likes.php')
+        fetch('/secret/tiktok-fake/get_likes.php')
         .then(response => {
           console.log('Get likes response status:', response.status);
           return response.json();

@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         session_write_close();
         
         // For Tom's password, always redirect to Tom's area
-        $redirect_url = '/secret/Tom/index.php';
+        $redirect_url = '/secret/tiktok-fake/index.php';
         unset($_SESSION['redirect_after_login']);
         
         header('Location: ' . $redirect_url);

@@ -30,10 +30,10 @@ function loadEnv($path) {
 $env = loadEnv(__DIR__ . '/../.env');
 
 // Database configuration
-$db_host = $env['DB_HOST'] ?? 'localhost';
-$db_name = $env['DB_NAME'] ?? 'schildflieger_tom';
-$db_user = $env['DB_USER'] ?? 'tom_user';
-$db_pass = $env['DB_PASS'] ?? 'tom_password123';
+$db_host = $env['DB_HOST'];
+$db_name = $env['DB_NAME'];
+$db_user = $env['DB_USER'];
+$db_pass = $env['DB_PASS'];
 
 try {
     // Create PDO connection
