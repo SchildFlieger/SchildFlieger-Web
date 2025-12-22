@@ -21,11 +21,14 @@ try {
         $likesArray[$like['media_filename']] = (int)$like['like_count'];
     }
     
+    error_log("Successfully fetched likes: " . json_encode($likesArray));
+    
     echo json_encode([
         'success' => true,
         'likes' => $likesArray
     ]);
 } catch(PDOException $e) {
+    error_log("Database error in get_likes.php: " . $e->getMessage());
     http_response_code(500);
     echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
 }

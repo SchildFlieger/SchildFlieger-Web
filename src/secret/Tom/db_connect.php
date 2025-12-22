@@ -30,10 +30,10 @@ function loadEnv($path) {
 $env = loadEnv(__DIR__ . '/../.env');
 
 // Database configuration
-$db_host = $env['DB_HOST'];
-$db_name = $env['DB_NAME'];
-$db_user = $env['DB_USER'];
-$db_pass = $env['DB_PASS'];
+$db_host = $env['DB_HOST'] ?? 'localhost';
+$db_name = $env['DB_NAME'] ?? 'schildflieger_tom';
+$db_user = $env['DB_USER'] ?? 'tom_user';
+$db_pass = $env['DB_PASS'] ?? 'tom_password123';
 
 try {
     // Create PDO connection
@@ -41,6 +41,7 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch(PDOException $e) {
     // If connection fails, we'll handle it gracefully in the main script
+    error_log("Database connection failed: " . $e->getMessage());
     $pdo = null;
 }
 ?>

@@ -507,6 +507,18 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
       .like-count {
         font-size: 0.9rem;
       }
+      
+      /* Like Animation */
+      @keyframes likePulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.3); }
+        100% { transform: scale(1); }
+      }
+      
+      .like-button.liked-animation {
+        animation: likePulse 0.5s ease;
+        color: #ff0000;
+      }
     </style>
   </head>
   <body>
@@ -855,14 +867,20 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         
         // Initialize likes from server
         fetch('/secret/Tom/get_likes.php')
-          .then(response => response.json())
+          .then(response => {
+            console.log('TikTok mode - Response status:', response.status);
+            return response.json();
+          })
           .then(data => {
+            console.log('TikTok mode - Likes data received:', data);
             if (data.success) {
               likes = data.likes;
               updateLikeCount();
+            } else {
+              console.error('TikTok mode - Error in likes data:', data.error);
             }
           })
-          .catch(error => console.error('Error loading likes:', error));
+          .catch(error => console.error('TikTok mode - Error loading likes:', error));
         
         // Toggle TikTok mode
         tiktokToggle.addEventListener('click', function() {
@@ -941,6 +959,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         // Like current media
         function likeMedia(index) {
           const media = mediaFiles[index];
+          console.log('TikTok mode - Liking media:', media.filename);
           
           // Send like to server
           fetch('/secret/Tom/like_handler.php', {
@@ -950,20 +969,28 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             },
             body: JSON.stringify({ filename: media.filename })
           })
-          .then(response => response.json())
+          .then(response => {
+            console.log('TikTok mode - Like response status:', response.status);
+            return response.json();
+          })
           .then(data => {
+            console.log('TikTok mode - Like response data:', data);
             if (data.success) {
               likes[media.filename] = data.like_count;
               updateLikeCount();
               
               // Visual feedback
               tiktokLike.classList.add('liked');
+              tiktokLike.classList.add('liked-animation');
               setTimeout(() => {
                 tiktokLike.classList.remove('liked');
-              }, 500);
+                tiktokLike.classList.remove('liked-animation');
+              }, 1000);
+            } else {
+              console.error('TikTok mode - Error in like response:', data.error);
             }
           })
-          .catch(error => console.error('Error liking media:', error));
+          .catch(error => console.error('TikTok mode - Error liking media:', error));
         }
       });
       
@@ -975,11 +1002,17 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         
         // Initialize likes from server
         fetch('/secret/Tom/get_likes.php')
-          .then(response => response.json())
+          .then(response => {
+            console.log('Response status:', response.status);
+            return response.json();
+          })
           .then(data => {
+            console.log('Likes data received:', data);
             if (data.success) {
               likes = data.likes;
               updateAllLikeCounts();
+            } else {
+              console.error('Error in likes data:', data.error);
             }
           })
           .catch(error => console.error('Error loading likes:', error));
@@ -998,7 +1031,9 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             const filename = button.getAttribute('data-filename');
             const likeCountElement = button.querySelector('.like-count');
             const count = likes[filename] || 0;
-            likeCountElement.textContent = count;
+            if (likeCountElement) {
+              likeCountElement.textContent = count;
+            }
             
             // Update button state if liked
             if (count > 0) {
@@ -1009,6 +1044,8 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         
         // Like media function for grid view
         function likeMedia(filename, button) {
+          console.log('Liking media:', filename);
+          
           // Send like to server
           fetch('/secret/Tom/like_handler.php', {
             method: 'POST',
@@ -1017,22 +1054,41 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             },
             body: JSON.stringify({ filename: filename })
           })
-          .then(response => response.json())
+          .then(response => {
+            console.log('Like response status:', response.status);
+            return response.json();
+          })
           .then(data => {
+            console.log('Like response data:', data);
             if (data.success) {
               likes[filename] = data.like_count;
               
               // Update button UI
               const likeCountElement = button.querySelector('.like-count');
-              likeCountElement.textContent = data.like_count;
+              if (likeCountElement) {
+                likeCountElement.textContent = data.like_count;
+              }
               button.classList.add('liked');
               
+              // Add animation class
+              button.classList.add('liked-animation');
+              setTimeout(() => {
+                button.classList.remove('liked-animation');
+              }, 1000);
+              
               // Also update TikTok mode if it's active and showing the same media
-              if (document.getElementById('tiktokLikeCount') && 
-                  document.querySelector('#tiktokMediaContainer video')?.src?.includes(filename) || 
-                  document.querySelector('#tiktokMediaContainer img')?.src?.includes(filename)) {
-                document.getElementById('tiktokLikeCount').textContent = data.like_count;
+              const tiktokLikeCount = document.getElementById('tiktokLikeCount');
+              if (tiktokLikeCount) {
+                const tiktokVideo = document.querySelector('#tiktokMediaContainer video');
+                const tiktokImg = document.querySelector('#tiktokMediaContainer img');
+                
+                if ((tiktokVideo && tiktokVideo.src && tiktokVideo.src.includes(filename)) || 
+                    (tiktokImg && tiktokImg.src && tiktokImg.src.includes(filename))) {
+                  tiktokLikeCount.textContent = data.like_count;
+                }
               }
+            } else {
+              console.error('Error in like response:', data.error);
             }
           })
           .catch(error => console.error('Error liking media:', error));
