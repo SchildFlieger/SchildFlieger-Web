@@ -72,7 +72,8 @@ try {
         echo "  {$row['media_filename']}: {$row['like_count']}\n";
     }
     
-    echo "Database initialized successfully!\n";} catch(PDOException $e) {
+    echo "Database initialized successfully!\n";
+} catch(PDOException $e) {
     echo "Error initializing database: " . $e->getMessage();
 }
 ?>

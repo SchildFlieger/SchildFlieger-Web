@@ -872,6 +872,9 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         fetch('/secret/Tom/get_likes.php')
           .then(response => {
             console.log('Response status:', response.status);
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
             return response.json();
           })
           .then(data => {
@@ -1005,6 +1008,9 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
           })
           .then(response => {
             console.log('TikTok mode - Like response status:', response.status);
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
             return response.json();
           })
           .then(data => {
@@ -1055,11 +1061,14 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
-            },
+              },
             body: JSON.stringify({ filename: filename })
           })
           .then(response => {
             console.log('Grid view - Like response status:', response.status);
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
             return response.json();
           })
           .then(data => {
