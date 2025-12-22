@@ -314,6 +314,169 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
           filter: drop-shadow(0 0 15px var(--primary-glow));
         }
       }
+      
+      /* TikTok Mode Styles */
+      .tiktok-toggle {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        color: white;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+      
+      .tiktok-toggle:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 25px rgba(0, 243, 255, 0.5);
+      }
+      
+      .tiktok-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--bg-dark);
+        z-index: 999;
+        display: none;
+        overflow: hidden;
+      }
+      
+      .tiktok-media-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .tiktok-media {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+      
+      .tiktok-video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+      
+      .tiktok-controls {
+        position: absolute;
+        bottom: 30px;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        z-index: 1001;
+      }
+      
+      .tiktok-control-btn {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+      }
+      
+      .tiktok-control-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
+      }
+      
+      .tiktok-like-btn {
+        position: absolute;
+        right: 30px;
+        bottom: 100px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+      }
+      
+      .tiktok-like-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
+      }
+      
+      .tiktok-like-btn.liked {
+        color: #ff0000;
+        animation: pulse 0.5s ease;
+      }
+      
+      @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+      }
+      
+      .tiktok-like-count {
+        position: absolute;
+        right: 35px;
+        bottom: 170px;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 16px;
+        backdrop-filter: blur(10px);
+      }
+      
+      .tiktok-close-btn {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        z-index: 1002;
+      }
+      
+      .tiktok-close-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.1);
+      }
     </style>
   </head>
   <body>
@@ -377,7 +540,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             </div>
             <div class="video-meta">
               <span><i class="fas fa-file-video"></i> MP4</span>
-              <span><i class="fas fa-clock"></i> 294 KB</span>
+              <span><i class="fas fa-clock"></i> 295 KB</span>
             </div>
           </div>
 
@@ -395,7 +558,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             </div>
             <div class="video-meta">
               <span><i class="fas fa-file-image"></i> JPEG</span>
-              <span><i class="fas fa-clock"></i> 96 KB</span>
+              <span><i class="fas fa-clock"></i> 99 KB</span>
             </div>
           </div>
 
@@ -413,7 +576,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             </div>
             <div class="video-meta">
               <span><i class="fas fa-file-image"></i> JPEG</span>
-              <span><i class="fas fa-clock"></i> 264 KB</span>
+              <span><i class="fas fa-clock"></i> 265 KB</span>
             </div>
           </div>
 
@@ -435,6 +598,96 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <div class="video-meta">
               <span><i class="fas fa-file-video"></i> MP4</span>
               <span><i class="fas fa-clock"></i> 1.3 MB</span>
+            </div>
+          </div>
+
+          <!-- Image 3 -->
+          <div class="card reveal">
+            <div class="video-icon">
+              <i class="fas fa-image"></i>
+            </div>
+            <h3 class="video-title">Bild Theo guffi</h3>
+            <p class="video-description">
+              A funny moment with Theo.
+            </p>
+            <div class="video-container">
+              <img src="/secret/Videos Passwort/Bild Theo guffi.jpeg" alt="Bild Theo guffi" style="width: 100%; height: auto; border-radius: 8px;">
+            </div>
+            <div class="video-meta">
+              <span><i class="fas fa-file-image"></i> JPEG</span>
+              <span><i class="fas fa-clock"></i> 34 KB</span>
+            </div>
+          </div>
+
+          <!-- Image 4 -->
+          <div class="card reveal">
+            <div class="video-icon">
+              <i class="fas fa-image"></i>
+            </div>
+            <h3 class="video-title">Bild Theo Random</h3>
+            <p class="video-description">
+              Random moment with Theo.
+            </p>
+            <div class="video-container">
+              <img src="/secret/Videos Passwort/Bild Theo Random.jpeg" alt="Bild Theo Random" style="width: 100%; height: auto; border-radius: 8px;">
+            </div>
+            <div class="video-meta">
+              <span><i class="fas fa-file-image"></i> JPEG</span>
+              <span><i class="fas fa-clock"></i> 231 KB</span>
+            </div>
+          </div>
+
+          <!-- Image 5 -->
+          <div class="card reveal">
+            <div class="video-icon">
+              <i class="fas fa-image"></i>
+            </div>
+            <h3 class="video-title">Bild Theo Schlafen</h3>
+            <p class="video-description">
+              Theo sleeping.
+            </p>
+            <div class="video-container">
+              <img src="/secret/Videos Passwort/Bild Theo Schlafen.jpeg" alt="Bild Theo Schlafen" style="width: 100%; height: auto; border-radius: 8px;">
+            </div>
+            <div class="video-meta">
+              <span><i class="fas fa-file-image"></i> JPEG</span>
+              <span><i class="fas fa-clock"></i> 139 KB</span>
+            </div>
+          </div>
+
+          <!-- Image 6 -->
+          <div class="card reveal">
+            <div class="video-icon">
+              <i class="fas fa-image"></i>
+            </div>
+            <h3 class="video-title">Bild Tom klein</h3>
+            <p class="video-description">
+              Small picture of Tom.
+            </p>
+            <div class="video-container">
+              <img src="/secret/Videos Passwort/Bild Tom klein.jpeg" alt="Bild Tom klein" style="width: 100%; height: auto; border-radius: 8px;">
+            </div>
+            <div class="video-meta">
+              <span><i class="fas fa-file-image"></i> JPEG</span>
+              <span><i class="fas fa-clock"></i> 109 KB</span>
+            </div>
+          </div>
+
+          <!-- Image 7 -->
+          <div class="card reveal">
+            <div class="video-icon">
+              <i class="fas fa-image"></i>
+            </div>
+            <h3 class="video-title">Erik</h3>
+            <p class="video-description">
+              Picture with Erik.
+            </p>
+            <div class="video-container">
+              <img src="/secret/Videos Passwort/Erik.jpeg" alt="Erik" style="width: 100%; height: auto; border-radius: 8px;">
+            </div>
+            <div class="video-meta">
+              <span><i class="fas fa-file-image"></i> JPEG</span>
+              <span><i class="fas fa-clock"></i> 116 KB</span>
             </div>
           </div>
         </div>
@@ -487,6 +740,175 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         </div>
       </div>
     </footer>
+    <!-- TikTok Mode Toggle Button -->
+    <button id="tiktokToggle" class="tiktok-toggle" title="TikTok Mode">
+      <i class="fas fa-mobile-alt"></i>
+    </button>
+    
+    <!-- TikTok Mode Container -->
+    <div id="tiktokContainer" class="tiktok-container">
+      <button id="tiktokClose" class="tiktok-close-btn">
+        <i class="fas fa-times"></i>
+      </button>
+      <div id="tiktokMediaContainer" class="tiktok-media-container"></div>
+      <div class="tiktok-controls">
+        <button id="tiktokPrev" class="tiktok-control-btn">
+          <i class="fas fa-arrow-up"></i>
+        </button>
+        <button id="tiktokNext" class="tiktok-control-btn">
+          <i class="fas fa-arrow-down"></i>
+        </button>
+      </div>
+      <button id="tiktokLike" class="tiktok-like-btn">
+        <i class="fas fa-heart"></i>
+      </button>
+      <div id="tiktokLikeCount" class="tiktok-like-count">0</div>
+    </div>
+    
     <script src="/assets/js/main.js"></script>
+    <script>
+      // TikTok Mode Implementation
+      document.addEventListener('DOMContentLoaded', function() {
+        // Media files array
+        const mediaFiles = [
+          { filename: 'Amena Tom.mp4', type: 'video' },
+          { filename: 'Bild Theo guffi.jpeg', type: 'image' },
+          { filename: 'Bild Theo Random.jpeg', type: 'image' },
+          { filename: 'Bild Theo Schlafen.jpeg', type: 'image' },
+          { filename: 'Bild Theo.jpeg', type: 'image' },
+          { filename: 'Bild Tom klein.jpeg', type: 'image' },
+          { filename: 'Bild Tom.jpeg', type: 'image' },
+          { filename: 'Erik.jpeg', type: 'image' },
+          { filename: 'Franzosen Tom.mp4', type: 'video' }
+        ];
+        
+        // DOM Elements
+        const tiktokToggle = document.getElementById('tiktokToggle');
+        const tiktokContainer = document.getElementById('tiktokContainer');
+        const tiktokClose = document.getElementById('tiktokClose');
+        const tiktokMediaContainer = document.getElementById('tiktokMediaContainer');
+        const tiktokPrev = document.getElementById('tiktokPrev');
+        const tiktokNext = document.getElementById('tiktokNext');
+        const tiktokLike = document.getElementById('tiktokLike');
+        const tiktokLikeCount = document.getElementById('tiktokLikeCount');
+        
+        // State variables
+        let currentIndex = 0;
+        let likes = {};
+        
+        // Initialize likes from server
+        fetch('/secret/Tom/get_likes.php')
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              likes = data.likes;
+              updateLikeCount();
+            }
+          })
+          .catch(error => console.error('Error loading likes:', error));
+        
+        // Toggle TikTok mode
+        tiktokToggle.addEventListener('click', function() {
+          tiktokContainer.style.display = 'block';
+          loadMedia(currentIndex);
+        });
+        
+        // Close TikTok mode
+        tiktokClose.addEventListener('click', function() {
+          tiktokContainer.style.display = 'none';
+          // Pause any playing video
+          const video = tiktokMediaContainer.querySelector('video');
+          if (video) {
+            video.pause();
+          }
+        });
+        
+        // Navigate to previous media
+        tiktokPrev.addEventListener('click', function() {
+          currentIndex = (currentIndex - 1 + mediaFiles.length) % mediaFiles.length;
+          loadMedia(currentIndex);
+        });
+        
+        // Navigate to next media
+        tiktokNext.addEventListener('click', function() {
+          currentIndex = (currentIndex + 1) % mediaFiles.length;
+          loadMedia(currentIndex);
+        });
+        
+        // Like current media
+        tiktokLike.addEventListener('click', function() {
+          likeMedia(currentIndex);
+        });
+        
+        // Double-click to like
+        tiktokMediaContainer.addEventListener('dblclick', function() {
+          likeMedia(currentIndex);
+        });
+        
+        // Load media into container
+        function loadMedia(index) {
+          const media = mediaFiles[index];
+          tiktokMediaContainer.innerHTML = '';
+          
+          if (media.type === 'video') {
+            const video = document.createElement('video');
+            video.className = 'tiktok-video';
+            video.controls = true;
+            video.autoplay = true;
+            video.loop = true;
+            
+            const source = document.createElement('source');
+            source.src = '/secret/Videos Passwort/' + media.filename;
+            source.type = 'video/mp4';
+            
+            video.appendChild(source);
+            tiktokMediaContainer.appendChild(video);
+          } else {
+            const img = document.createElement('img');
+            img.className = 'tiktok-media';
+            img.src = '/secret/Videos Passwort/' + media.filename;
+            img.alt = media.filename;
+            tiktokMediaContainer.appendChild(img);
+          }
+          
+          updateLikeCount();
+        }
+        
+        // Update like count display
+        function updateLikeCount() {
+          const media = mediaFiles[currentIndex];
+          const count = likes[media.filename] || 0;
+          tiktokLikeCount.textContent = count;
+        }
+        
+        // Like current media
+        function likeMedia(index) {
+          const media = mediaFiles[index];
+          
+          // Send like to server
+          fetch('/secret/Tom/like_handler.php', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ filename: media.filename })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              likes[media.filename] = data.like_count;
+              updateLikeCount();
+              
+              // Visual feedback
+              tiktokLike.classList.add('liked');
+              setTimeout(() => {
+                tiktokLike.classList.remove('liked');
+              }, 500);
+            }
+          })
+          .catch(error => console.error('Error liking media:', error));
+        }
+      });
+    </script>
   </body>
 </html>
