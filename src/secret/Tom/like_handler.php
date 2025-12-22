@@ -2,6 +2,9 @@
 // Script to handle like operations for Tom's section
 require_once 'db_connect.php';
 
+// Log the request
+error_log("Like handler called with method: " . $_SERVER['REQUEST_METHOD']);
+
 header('Content-Type: application/json');
 
 error_log("Like handler called with method: " . $_SERVER['REQUEST_METHOD']);
@@ -15,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 if ($pdo === null) {
     error_log("Database connection failed in like_handler.php");
     http_response_code(500);
-    echo json_encode(['error' => 'Database connection failed']);
+    echo json_encode(['error' => 'Database connection failed', 'details' => 'Could not connect to database']);
     exit();
 }
 
@@ -25,6 +28,7 @@ $filename = $input['filename'] ?? '';
 error_log("Like handler received filename: " . $filename);
 
 if (empty($filename)) {
+    error_log("Empty filename provided");
     http_response_code(400);
     echo json_encode(['error' => 'Filename is required']);
     exit();
@@ -32,6 +36,7 @@ if (empty($filename)) {
 
 try {
     // Increment like count for the specified media file
+    error_log("Attempting to update like count for: " . $filename);
     $stmt = $pdo->prepare("UPDATE media_likes SET like_count = like_count + 1 WHERE media_filename = ?");
     $result = $stmt->execute([$filename]);
     
@@ -42,7 +47,7 @@ try {
         error_log("No existing record found, attempting to insert new record for: " . $filename);
         $stmt = $pdo->prepare("INSERT INTO media_likes (media_filename, like_count) VALUES (?, 1) ON DUPLICATE KEY UPDATE like_count = like_count + 1");
         $insertResult = $stmt->execute([$filename]);
-        error_log("Insert query executed, rows affected: " . $stmt->rowCount());
+        error_log("Insert query executed, rows affected: " . $stmt->rowCount() . ", success: " . ($insertResult ? 'true' : 'false'));
         
         // If that also fails or doesn't insert a new row, try a simple insert ignore
         if ($stmt->rowCount() === 0) {
@@ -54,9 +59,11 @@ try {
     }
     
     // Get the updated like count
+    error_log("Fetching updated like count for: " . $filename);
     $stmt = $pdo->prepare("SELECT like_count FROM media_likes WHERE media_filename = ?");
     $stmt->execute([$filename]);
     $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    error_log("Select query executed, row found: " . ($row ? 'true' : 'false'));
     
     if ($row) {
         error_log("Successfully updated like count for " . $filename . ": " . $row['like_count']);
@@ -72,7 +79,8 @@ try {
     }
 } catch(PDOException $e) {
     error_log("Database error in like_handler.php: " . $e->getMessage());
+    error_log("Database error trace: " . $e->getTraceAsString());
     http_response_code(500);
-    echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+    echo json_encode(['error' => 'Database error: ' . $e->getMessage(), 'trace' => $e->getTraceAsString()]);
 }
 ?>

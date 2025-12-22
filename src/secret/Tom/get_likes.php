@@ -5,15 +5,18 @@ require_once 'db_connect.php';
 header('Content-Type: application/json');
 
 if ($pdo === null) {
+    error_log("Database connection failed in get_likes.php");
     http_response_code(500);
-    echo json_encode(['error' => 'Database connection failed']);
+    echo json_encode(['error' => 'Database connection failed', 'details' => 'Could not connect to database']);
     exit();
 }
 
 try {
     // Check if media_likes table exists
+    error_log("Checking if media_likes table exists");
     $stmt = $pdo->query("SHOW TABLES LIKE 'media_likes'");
     $tableExists = $stmt->fetch();
+    error_log("Table exists check result: " . ($tableExists ? 'true' : 'false'));
     
     if (!$tableExists) {
         // Table doesn't exist, try to create it
@@ -22,8 +25,10 @@ try {
     }
     
     // Get like counts for all media files
+    error_log("Fetching all like counts");
     $stmt = $pdo->query("SELECT media_filename, like_count FROM media_likes ORDER BY media_filename");
     $likes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    error_log("Fetched " . count($likes) . " records");
     
     // Convert to associative array for easier access
     $likesArray = [];
@@ -39,7 +44,8 @@ try {
     ]);
 } catch(PDOException $e) {
     error_log("Database error in get_likes.php: " . $e->getMessage());
+    error_log("Database error trace: " . $e->getTraceAsString());
     http_response_code(500);
-    echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+    echo json_encode(['error' => 'Database error: ' . $e->getMessage(), 'trace' => $e->getTraceAsString()]);
 }
 ?>

@@ -891,9 +891,19 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
               }
             } else {
               console.error('Error in likes data:', data.error);
+              // Fallback: initialize with empty likes
+              likes = {};
+              updateAllLikeCounts();
+              updateTikTokLikeCount();
             }
           })
-          .catch(error => console.error('Error loading likes:', error));
+          .catch(error => {
+            console.error('Error loading likes:', error);
+            // Fallback: initialize with empty likes
+            likes = {};
+            updateAllLikeCounts();
+            updateTikTokLikeCount();
+          });
         
         // TikTok Mode Event Listeners
         
@@ -1066,7 +1076,9 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
           console.log('TikTok mode - Liking media:', media.filename);
           
           // Send like to server
-          fetch('/secret/Tom/like_handler.php', {
+          const likeUrl = '/secret/Tom/like_handler.php';
+          console.log('TikTok mode - Sending like request to:', likeUrl);
+          fetch(likeUrl, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -1076,7 +1088,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
           .then(response => {
             console.log('TikTok mode - Like response status:', response.status);
             if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
+              throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
             }
             return response.json();
           })
@@ -1108,12 +1120,40 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
               updateGridViewButtons(media.filename, data.like_count);
             } else {
               console.error('TikTok mode - Error in like response:', data.error);
+              // Show error to user
+              alert('Failed to like media. Server error: ' + data.error + '. Please try again.');
             }
           })
           .catch(error => {
             console.error('TikTok mode - Error liking media:', error);
-            // Show error to user
-            alert('Failed to like media. Please try again.');
+            // Show detailed error to user
+            alert('Failed to like media. Error: ' + error.message + '. Please try again. Note: Your likes may not be saved if there is a database connection issue.');
+            
+            // Fallback: update UI locally
+            const currentCount = likes[media.filename] || 0;
+            likes[media.filename] = currentCount + 1;
+            updateTikTokLikeCount();
+            
+            // Visual feedback with animation
+            if (tiktokLike) {
+              // Ensure any existing animation is stopped
+              tiktokLike.classList.remove('liked', 'liked-animation');
+              // Trigger reflow to restart animation
+              void tiktokLike.offsetWidth;
+              // Add classes for visual feedback
+              tiktokLike.classList.add('liked');
+              tiktokLike.classList.add('liked-animation');
+              setTimeout(() => {
+                tiktokLike.classList.remove('liked-animation');
+              }, 1000);
+              // Also remove the liked class after a longer time to allow for unliking
+              setTimeout(() => {
+                tiktokLike.classList.remove('liked');
+              }, 3000);
+            }
+            
+            // Also update grid view buttons if they exist on the page
+            updateGridViewButtons(media.filename, likes[media.filename]);
           });
         }
         
@@ -1141,7 +1181,9 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
           console.log('Grid view - Liking media:', filename);
           
           // Send like to server
-          fetch('/secret/Tom/like_handler.php', {
+          const likeUrl = '/secret/Tom/like_handler.php';
+          console.log('Grid view - Sending like request to:', likeUrl);
+          fetch(likeUrl, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -1151,7 +1193,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
           .then(response => {
             console.log('Grid view - Like response status:', response.status);
             if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
+              throw new Error(`HTTP error! status: ${response.status} - ${response.statusText}`);
             }
             return response.json();
           })
@@ -1196,12 +1238,53 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
               }
             } else {
               console.error('Grid view - Error in like response:', data.error);
+              // Show error to user
+              alert('Failed to like media. Server error: ' + data.error + '. Please try again.');
             }
           })
           .catch(error => {
             console.error('Grid view - Error liking media:', error);
-            // Show error to user
-            alert('Failed to like media. Please try again.');
+            // Show detailed error to user
+            alert('Failed to like media. Error: ' + error.message + '. Please try again. Note: Your likes may not be saved if there is a database connection issue.');
+            
+            // Fallback: update UI locally
+            const currentCount = likes[filename] || 0;
+            likes[filename] = currentCount + 1;
+            
+            // Update button UI
+            const likeCountElement = button.querySelector('.like-count');
+            if (likeCountElement) {
+              likeCountElement.textContent = likes[filename];
+            }
+            button.classList.add('liked');
+            
+            // Add animation class
+            button.classList.add('liked-animation');
+            setTimeout(() => {
+              button.classList.remove('liked-animation');
+            }, 1000);
+            
+            // Also update TikTok mode if it's active and showing the same media
+            if (tiktokLikeCount && tiktokContainer && tiktokContainer.style.display !== 'none') {
+              const tiktokVideo = document.querySelector('#tiktokMediaContainer video');
+              const tiktokImg = document.querySelector('#tiktokMediaContainer img');
+              
+              if ((tiktokVideo && tiktokVideo.src && tiktokVideo.src.includes(filename)) || 
+                  (tiktokImg && tiktokImg.src && tiktokImg.src.includes(filename))) {
+                tiktokLikeCount.textContent = likes[filename];
+                // Also update the TikTok like button visual state
+                if (tiktokLike) {
+                  tiktokLike.classList.add('liked');
+                  // Add animation
+                  tiktokLike.classList.remove('liked-animation');
+                  void tiktokLike.offsetWidth;
+                  tiktokLike.classList.add('liked-animation');
+                  setTimeout(() => {
+                    tiktokLike.classList.remove('liked-animation');
+                  }, 1000);
+                }
+              }
+            }
           });
         }
       }
@@ -1214,6 +1297,50 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         // DOM is already ready, execute immediately
         initializeLikeFunctionality();
       }
+      
+      // Test function to check if like handler is accessible
+      function testLikeHandler() {
+        console.log('Testing like handler accessibility...');
+        fetch('/secret/Tom/like_handler.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ filename: 'test.mp4' })
+        })
+        .then(response => {
+          console.log('Test response status:', response.status);
+          return response.json();
+        })
+        .then(data => {
+          console.log('Test response data:', data);
+        })
+        .catch(error => {
+          console.error('Test error:', error);
+        });
+      }
+      
+      // Uncomment the line below to run the test
+      // testLikeHandler();
+      
+      // Test function to check if get_likes is accessible
+      function testGetLikes() {
+        console.log('Testing get_likes accessibility...');
+        fetch('/secret/Tom/get_likes.php')
+        .then(response => {
+          console.log('Get likes response status:', response.status);
+          return response.json();
+        })
+        .then(data => {
+          console.log('Get likes response data:', data);
+        })
+        .catch(error => {
+          console.error('Get likes error:', error);
+        });
+      }
+      
+      // Uncomment the line below to run the test
+      // testGetLikes();
     </script>
   </body>
 </html>
