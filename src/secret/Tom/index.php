@@ -837,7 +837,9 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     <script src="/assets/js/main.js"></script>
     <script>
       // Combined TikTok Mode and Grid View Like Functionality
-      document.addEventListener('DOMContentLoaded', function() {
+      // Since main.js already handles DOMContentLoaded, we can execute immediately
+      // but we'll still wrap in a function to ensure DOM is ready
+      function initializeLikeFunctionality() {
         // Media files array for TikTok mode
         const mediaFiles = [
           { filename: 'Amena Tom.mp4', type: 'video' },
@@ -1051,7 +1053,8 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
               button.classList.add('liked');
             }
           });
-        }        
+        }
+        
         // Like media function for grid view
         function likeMediaGrid(filename, button) {
           console.log('Grid view - Liking media:', filename);
@@ -1061,7 +1064,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
-              },
+            },
             body: JSON.stringify({ filename: filename })
           })
           .then(response => {
@@ -1105,7 +1108,23 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
           })
           .catch(error => console.error('Grid view - Error liking media:', error));
         }
-      });
+      }
+      
+      // Execute the initialization function
+      // We'll try to execute it immediately, and if that fails, we'll wait for DOMContentLoaded
+      try {
+        if (document.readyState === 'loading') {
+          // DOM is still loading, wait for it to be ready
+          document.addEventListener('DOMContentLoaded', initializeLikeFunctionality);
+        } else {
+          // DOM is already ready, execute immediately
+          initializeLikeFunctionality();
+        }
+      } catch (error) {
+        console.error('Error initializing like functionality:', error);
+        // Fallback to DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', initializeLikeFunctionality);
+      }
     </script>
   </body>
 </html>
