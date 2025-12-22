@@ -836,9 +836,9 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     
     <script src="/assets/js/main.js"></script>
     <script>
-      // TikTok Mode Implementation
+      // Combined TikTok Mode and Grid View Like Functionality
       document.addEventListener('DOMContentLoaded', function() {
-        // Media files array
+        // Media files array for TikTok mode
         const mediaFiles = [
           { filename: 'Amena Tom.mp4', type: 'video' },
           { filename: 'Bild Theo guffi.jpeg', type: 'image' },
@@ -851,7 +851,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
           { filename: 'Franzosen Tom.mp4', type: 'video' }
         ];
         
-        // DOM Elements
+        // DOM Elements for TikTok mode
         const tiktokToggle = document.getElementById('tiktokToggle');
         const tiktokContainer = document.getElementById('tiktokContainer');
         const tiktokClose = document.getElementById('tiktokClose');
@@ -861,103 +861,137 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         const tiktokLike = document.getElementById('tiktokLike');
         const tiktokLikeCount = document.getElementById('tiktokLikeCount');
         
+        // Get all like buttons in grid view
+        const likeButtons = document.querySelectorAll('.like-button');
+        
         // State variables
         let currentIndex = 0;
         let likes = {};
         
-        // Initialize likes from server
+        // Initialize likes from server (shared between TikTok mode and grid view)
         fetch('/secret/Tom/get_likes.php')
           .then(response => {
-            console.log('TikTok mode - Response status:', response.status);
+            console.log('Response status:', response.status);
             return response.json();
           })
           .then(data => {
-            console.log('TikTok mode - Likes data received:', data);
+            console.log('Likes data received:', data);
             if (data.success) {
               likes = data.likes;
-              updateLikeCount();
+              updateAllLikeCounts();
+              updateTikTokLikeCount();
             } else {
-              console.error('TikTok mode - Error in likes data:', data.error);
+              console.error('Error in likes data:', data.error);
             }
           })
-          .catch(error => console.error('TikTok mode - Error loading likes:', error));
+          .catch(error => console.error('Error loading likes:', error));
+        
+        // TikTok Mode Event Listeners
         
         // Toggle TikTok mode
-        tiktokToggle.addEventListener('click', function() {
-          tiktokContainer.style.display = 'block';
-          loadMedia(currentIndex);
-        });
+        if (tiktokToggle) {
+          tiktokToggle.addEventListener('click', function() {
+            tiktokContainer.style.display = 'block';
+            loadMedia(currentIndex);
+          });
+        }
         
         // Close TikTok mode
-        tiktokClose.addEventListener('click', function() {
-          tiktokContainer.style.display = 'none';
-          // Pause any playing video
-          const video = tiktokMediaContainer.querySelector('video');
-          if (video) {
-            video.pause();
-          }
-        });
+        if (tiktokClose) {
+          tiktokClose.addEventListener('click', function() {
+            tiktokContainer.style.display = 'none';
+            // Pause any playing video
+            const video = tiktokMediaContainer.querySelector('video');
+            if (video) {
+              video.pause();
+            }
+          });
+        }
         
         // Navigate to previous media
-        tiktokPrev.addEventListener('click', function() {
-          currentIndex = (currentIndex - 1 + mediaFiles.length) % mediaFiles.length;
-          loadMedia(currentIndex);
-        });
+        if (tiktokPrev) {
+          tiktokPrev.addEventListener('click', function() {
+            currentIndex = (currentIndex - 1 + mediaFiles.length) % mediaFiles.length;
+            loadMedia(currentIndex);
+          });
+        }
         
         // Navigate to next media
-        tiktokNext.addEventListener('click', function() {
-          currentIndex = (currentIndex + 1) % mediaFiles.length;
-          loadMedia(currentIndex);
+        if (tiktokNext) {
+          tiktokNext.addEventListener('click', function() {
+            currentIndex = (currentIndex + 1) % mediaFiles.length;
+            loadMedia(currentIndex);
+          });
+        }
+        
+        // Like current media in TikTok mode
+        if (tiktokLike) {
+          tiktokLike.addEventListener('click', function() {
+            likeMediaTikTok(currentIndex);
+          });
+        }
+        
+        // Double-click to like in TikTok mode
+        if (tiktokMediaContainer) {
+          tiktokMediaContainer.addEventListener('dblclick', function() {
+            likeMediaTikTok(currentIndex);
+          });
+        }
+        
+        // Grid View Event Listeners
+        
+        // Add event listeners to all like buttons
+        likeButtons.forEach(button => {
+          button.addEventListener('click', function() {
+            const filename = this.getAttribute('data-filename');
+            likeMediaGrid(filename, this);
+          });
         });
         
-        // Like current media
-        tiktokLike.addEventListener('click', function() {
-          likeMedia(currentIndex);
-        });
-        
-        // Double-click to like
-        tiktokMediaContainer.addEventListener('dblclick', function() {
-          likeMedia(currentIndex);
-        });
+        // TikTok Mode Functions
         
         // Load media into container
         function loadMedia(index) {
           const media = mediaFiles[index];
-          tiktokMediaContainer.innerHTML = '';
-          
-          if (media.type === 'video') {
-            const video = document.createElement('video');
-            video.className = 'tiktok-video';
-            video.controls = true;
-            video.autoplay = true;
-            video.loop = true;
+          if (tiktokMediaContainer) {
+            tiktokMediaContainer.innerHTML = '';
             
-            const source = document.createElement('source');
-            source.src = '/secret/Videos Passwort/' + media.filename;
-            source.type = 'video/mp4';
+            if (media.type === 'video') {
+              const video = document.createElement('video');
+              video.className = 'tiktok-video';
+              video.controls = true;
+              video.autoplay = true;
+              video.loop = true;
+              
+              const source = document.createElement('source');
+              source.src = '/secret/Videos Passwort/' + media.filename;
+              source.type = 'video/mp4';
+              
+              video.appendChild(source);
+              tiktokMediaContainer.appendChild(video);
+            } else {
+              const img = document.createElement('img');
+              img.className = 'tiktok-media';
+              img.src = '/secret/Videos Passwort/' + media.filename;
+              img.alt = media.filename;
+              tiktokMediaContainer.appendChild(img);
+            }
             
-            video.appendChild(source);
-            tiktokMediaContainer.appendChild(video);
-          } else {
-            const img = document.createElement('img');
-            img.className = 'tiktok-media';
-            img.src = '/secret/Videos Passwort/' + media.filename;
-            img.alt = media.filename;
-            tiktokMediaContainer.appendChild(img);
+            updateTikTokLikeCount();
           }
-          
-          updateLikeCount();
         }
         
-        // Update like count display
-        function updateLikeCount() {
-          const media = mediaFiles[currentIndex];
-          const count = likes[media.filename] || 0;
-          tiktokLikeCount.textContent = count;
+        // Update like count display in TikTok mode
+        function updateTikTokLikeCount() {
+          if (tiktokLikeCount) {
+            const media = mediaFiles[currentIndex];
+            const count = likes[media.filename] || 0;
+            tiktokLikeCount.textContent = count;
+          }
         }
         
-        // Like current media
-        function likeMedia(index) {
+        // Like current media in TikTok mode
+        function likeMediaTikTok(index) {
           const media = mediaFiles[index];
           console.log('TikTok mode - Liking media:', media.filename);
           
@@ -977,53 +1011,25 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             console.log('TikTok mode - Like response data:', data);
             if (data.success) {
               likes[media.filename] = data.like_count;
-              updateLikeCount();
+              updateTikTokLikeCount();
               
               // Visual feedback
-              tiktokLike.classList.add('liked');
-              tiktokLike.classList.add('liked-animation');
-              setTimeout(() => {
-                tiktokLike.classList.remove('liked');
-                tiktokLike.classList.remove('liked-animation');
-              }, 1000);
+              if (tiktokLike) {
+                tiktokLike.classList.add('liked');
+                tiktokLike.classList.add('liked-animation');
+                setTimeout(() => {
+                  tiktokLike.classList.remove('liked');
+                  tiktokLike.classList.remove('liked-animation');
+                }, 1000);
+              }
             } else {
               console.error('TikTok mode - Error in like response:', data.error);
             }
           })
           .catch(error => console.error('TikTok mode - Error liking media:', error));
         }
-      });
-      
-      // Grid View Like Functionality
-      document.addEventListener('DOMContentLoaded', function() {
-        // Get all like buttons in grid view
-        const likeButtons = document.querySelectorAll('.like-button');
-        let likes = {};
         
-        // Initialize likes from server
-        fetch('/secret/Tom/get_likes.php')
-          .then(response => {
-            console.log('Response status:', response.status);
-            return response.json();
-          })
-          .then(data => {
-            console.log('Likes data received:', data);
-            if (data.success) {
-              likes = data.likes;
-              updateAllLikeCounts();
-            } else {
-              console.error('Error in likes data:', data.error);
-            }
-          })
-          .catch(error => console.error('Error loading likes:', error));
-        
-        // Add event listeners to all like buttons
-        likeButtons.forEach(button => {
-          button.addEventListener('click', function() {
-            const filename = this.getAttribute('data-filename');
-            likeMedia(filename, this);
-          });
-        });
+        // Grid View Functions
         
         // Update all like counts on page load
         function updateAllLikeCounts() {
@@ -1043,8 +1049,8 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         }
         
         // Like media function for grid view
-        function likeMedia(filename, button) {
-          console.log('Liking media:', filename);
+        function likeMediaGrid(filename, button) {
+          console.log('Grid view - Liking media:', filename);
           
           // Send like to server
           fetch('/secret/Tom/like_handler.php', {
@@ -1055,11 +1061,11 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             body: JSON.stringify({ filename: filename })
           })
           .then(response => {
-            console.log('Like response status:', response.status);
+            console.log('Grid view - Like response status:', response.status);
             return response.json();
           })
           .then(data => {
-            console.log('Like response data:', data);
+            console.log('Grid view - Like response data:', data);
             if (data.success) {
               likes[filename] = data.like_count;
               
@@ -1077,7 +1083,6 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
               }, 1000);
               
               // Also update TikTok mode if it's active and showing the same media
-              const tiktokLikeCount = document.getElementById('tiktokLikeCount');
               if (tiktokLikeCount) {
                 const tiktokVideo = document.querySelector('#tiktokMediaContainer video');
                 const tiktokImg = document.querySelector('#tiktokMediaContainer img');
@@ -1088,10 +1093,10 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                 }
               }
             } else {
-              console.error('Error in like response:', data.error);
+              console.error('Grid view - Error in like response:', data.error);
             }
           })
-          .catch(error => console.error('Error liking media:', error));
+          .catch(error => console.error('Grid view - Error liking media:', error));
         }
       });
     </script>
