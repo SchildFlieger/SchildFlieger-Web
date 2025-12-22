@@ -1018,7 +1018,6 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                 tiktokLike.classList.add('liked');
                 tiktokLike.classList.add('liked-animation');
                 setTimeout(() => {
-                  tiktokLike.classList.remove('liked');
                   tiktokLike.classList.remove('liked-animation');
                 }, 1000);
               }
@@ -1046,8 +1045,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
               button.classList.add('liked');
             }
           });
-        }
-        
+        }        
         // Like media function for grid view
         function likeMediaGrid(filename, button) {
           console.log('Grid view - Liking media:', filename);
