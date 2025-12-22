@@ -1258,16 +1258,29 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                 tiktokLike.classList.remove('liked', 'liked-animation');
                 // Trigger reflow to restart animation
                 void tiktokLike.offsetWidth;
-                // Add classes for visual feedback
-                tiktokLike.classList.add('liked');
-                tiktokLike.classList.add('liked-animation');
-                setTimeout(() => {
-                  tiktokLike.classList.remove('liked-animation');
-                }, 1000);
-                // Also remove the liked class after a longer time to allow for unliking
-                setTimeout(() => {
-                  tiktokLike.classList.remove('liked');
-                }, 3000);
+            // Check if this was a like or unlike action
+                if (data.action === 'liked') {
+                  // Add classes for visual feedback
+                  tiktokLike.classList.add('liked');
+                  tiktokLike.classList.add('liked-animation');
+                  setTimeout(() => {
+                    tiktokLike.classList.remove('liked-animation');
+                  }, 1000);
+                  // Also remove the liked class after a longer time to allow for unliking
+                  setTimeout(() => {
+                    tiktokLike.classList.remove('liked');
+                  }, 3000);
+                } else {
+                  // Unlike action - just show a brief animation
+                  tiktokLike.classList.add('liked-animation');
+                  setTimeout(() => {
+                    tiktokLike.classList.remove('liked-animation');
+                    // Remove liked class if count is 0
+                    if (data.like_count === 0) {
+                      tiktokLike.classList.remove('liked');
+                    }
+                  }, 1000);
+                }
               }
               
               // Also update grid view buttons if they exist on the page
@@ -1283,9 +1296,10 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             // Show detailed error to user
             alert('Failed to like media. Error: ' + error.message + '. Please try again. Note: Your likes may not be saved if there is a database connection issue.');
             
-            // Fallback: update UI locally
+            // Fallback: update UI locally with toggle behavior
             const currentCount = likes[media.filename] || 0;
-            likes[media.filename] = currentCount + 1;
+            // Toggle: if current count is > 0, decrease by 1 (unlike), otherwise increase by 1 (like)
+            likes[media.filename] = (currentCount > 0) ? (currentCount - 1) : (currentCount + 1);
             updateTikTokLikeCount();
             
             // Visual feedback with animation
@@ -1294,16 +1308,30 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
               tiktokLike.classList.remove('liked', 'liked-animation');
               // Trigger reflow to restart animation
               void tiktokLike.offsetWidth;
-              // Add classes for visual feedback
-              tiktokLike.classList.add('liked');
-              tiktokLike.classList.add('liked-animation');
-              setTimeout(() => {
-                tiktokLike.classList.remove('liked-animation');
-              }, 1000);
-              // Also remove the liked class after a longer time to allow for unliking
-              setTimeout(() => {
-                tiktokLike.classList.remove('liked');
-              }, 3000);
+              
+              // Check if this was a like or unlike action
+              if (likes[media.filename] > currentCount) {
+                // Add classes for visual feedback
+                tiktokLike.classList.add('liked');
+                tiktokLike.classList.add('liked-animation');
+                setTimeout(() => {
+                  tiktokLike.classList.remove('liked-animation');
+                }, 1000);
+                // Also remove the liked class after a longer time to allow for unliking
+                setTimeout(() => {
+                  tiktokLike.classList.remove('liked');
+                }, 3000);
+              } else {
+                // Unlike action - just show a brief animation
+                tiktokLike.classList.add('liked-animation');
+                setTimeout(() => {
+                  tiktokLike.classList.remove('liked-animation');
+                  // Remove liked class if count is 0
+                  if (likes[media.filename] === 0) {
+                    tiktokLike.classList.remove('liked');
+                  }
+                }, 1000);
+              }
             }
             
             // Also update grid view buttons if they exist on the page
@@ -1361,7 +1389,13 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
               if (likeCountElement) {
                 likeCountElement.textContent = data.like_count;
               }
-              button.classList.add('liked');
+              
+              // Add/remove liked class based on like count
+              if (data.like_count > 0) {
+                button.classList.add('liked');
+              } else {
+                button.classList.remove('liked');
+              }
               
               // Add animation class
               button.classList.add('liked-animation');
@@ -1379,7 +1413,12 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                   tiktokLikeCount.textContent = data.like_count;
                   // Also update the TikTok like button visual state
                   if (tiktokLike) {
-                    tiktokLike.classList.add('liked');
+                    // Add/remove liked class based on like count
+                    if (data.like_count > 0) {
+                      tiktokLike.classList.add('liked');
+                    } else {
+                      tiktokLike.classList.remove('liked');
+                    }
                     // Add animation
                     tiktokLike.classList.remove('liked-animation');
                     void tiktokLike.offsetWidth;
@@ -1401,16 +1440,23 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             // Show detailed error to user
             alert('Failed to like media. Error: ' + error.message + '. Please try again. Note: Your likes may not be saved if there is a database connection issue.');
             
-            // Fallback: update UI locally
+            // Fallback: update UI locally with toggle behavior
             const currentCount = likes[filename] || 0;
-            likes[filename] = currentCount + 1;
+            // Toggle: if current count is > 0, decrease by 1 (unlike), otherwise increase by 1 (like)
+            likes[filename] = (currentCount > 0) ? (currentCount - 1) : (currentCount + 1);
             
             // Update button UI
             const likeCountElement = button.querySelector('.like-count');
             if (likeCountElement) {
               likeCountElement.textContent = likes[filename];
             }
-            button.classList.add('liked');
+            
+            // Add/remove liked class based on like count
+            if (likes[filename] > 0) {
+              button.classList.add('liked');
+            } else {
+              button.classList.remove('liked');
+            }
             
             // Add animation class
             button.classList.add('liked-animation');
@@ -1428,7 +1474,12 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                 tiktokLikeCount.textContent = likes[filename];
                 // Also update the TikTok like button visual state
                 if (tiktokLike) {
-                  tiktokLike.classList.add('liked');
+                  // Add/remove liked class based on like count
+                  if (likes[filename] > 0) {
+                    tiktokLike.classList.add('liked');
+                  } else {
+                    tiktokLike.classList.remove('liked');
+                  }
                   // Add animation
                   tiktokLike.classList.remove('liked-animation');
                   void tiktokLike.offsetWidth;
