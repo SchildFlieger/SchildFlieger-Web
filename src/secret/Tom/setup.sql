@@ -2,10 +2,10 @@
 -- This script creates the database, table, and initializes like counters
 
 -- Create the database (uncomment if needed)
--- CREATE DATABASE IF NOT EXISTS schildflieger_tom CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+-- CREATE DATABASE IF NOT EXISTS schildflieger_web CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- Use the database
-USE schildflieger_tom;
+USE schildflieger_web;
 
 -- Create table for storing likes
 CREATE TABLE IF NOT EXISTS media_likes (
