@@ -962,6 +962,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
           });
         }
         
+        // Pleas help me! I'm in danger!
         // Handler function for double-click events
         function handleDoubleClick(e) {
           e.preventDefault();
