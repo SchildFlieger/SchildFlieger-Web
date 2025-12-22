@@ -11,6 +11,16 @@ if ($pdo === null) {
 }
 
 try {
+    // Check if media_likes table exists
+    $stmt = $pdo->query("SHOW TABLES LIKE 'media_likes'");
+    $tableExists = $stmt->fetch();
+    
+    if (!$tableExists) {
+        // Table doesn't exist, try to create it
+        error_log("media_likes table not found, attempting to create it");
+        include_once 'init_db.php';
+    }
+    
     // Get like counts for all media files
     $stmt = $pdo->query("SELECT media_filename, like_count FROM media_likes ORDER BY media_filename");
     $likes = $stmt->fetchAll(PDO::FETCH_ASSOC);

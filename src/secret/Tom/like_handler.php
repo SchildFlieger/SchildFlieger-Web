@@ -39,9 +39,18 @@ try {
     
     if ($stmt->rowCount() === 0) {
         // If no rows were affected, insert a new record
+        error_log("No existing record found, attempting to insert new record for: " . $filename);
         $stmt = $pdo->prepare("INSERT INTO media_likes (media_filename, like_count) VALUES (?, 1) ON DUPLICATE KEY UPDATE like_count = like_count + 1");
-        $stmt->execute([$filename]);
-        error_log("Insert query executed");
+        $insertResult = $stmt->execute([$filename]);
+        error_log("Insert query executed, rows affected: " . $stmt->rowCount());
+        
+        // If that also fails or doesn't insert a new row, try a simple insert ignore
+        if ($stmt->rowCount() === 0) {
+            error_log("ON DUPLICATE KEY UPDATE didn't insert new row, trying INSERT IGNORE for: " . $filename);
+            $stmt = $pdo->prepare("INSERT IGNORE INTO media_likes (media_filename, like_count) VALUES (?, 1)");
+            $stmt->execute([$filename]);
+            error_log("INSERT IGNORE executed, rows affected: " . $stmt->rowCount());
+        }
     }
     
     // Get the updated like count
