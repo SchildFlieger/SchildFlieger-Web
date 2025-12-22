@@ -477,6 +477,36 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         background: rgba(255, 255, 255, 0.3);
         transform: scale(1.1);
       }
+      
+      /* Grid View Like Buttons */
+      .like-button {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--border-col);
+        border-radius: 20px;
+        color: var(--text-muted);
+        padding: 8px 15px;
+        margin: 10px auto;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: "Inter", sans-serif;
+      }
+      
+      .like-button:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: var(--primary);
+        border-color: var(--primary);
+      }
+      
+      .like-button.liked {
+        color: #ff0000;
+      }
+      
+      .like-count {
+        font-size: 0.9rem;
+      }
     </style>
   </head>
   <body>
@@ -538,6 +568,9 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                 Your browser does not support the video tag.
               </video>
             </div>
+            <button class="like-button" data-filename="Amena Tom.mp4">
+              <i class="fas fa-heart"></i> <span class="like-count">0</span>
+            </button>
             <div class="video-meta">
               <span><i class="fas fa-file-video"></i> MP4</span>
               <span><i class="fas fa-clock"></i> 295 KB</span>
@@ -556,6 +589,9 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <div class="video-container">
               <img src="/secret/Videos Passwort/Bild Theo.jpeg" alt="Bild Theo" style="width: 100%; height: auto; border-radius: 8px;">
             </div>
+            <button class="like-button" data-filename="Bild Theo.jpeg">
+              <i class="fas fa-heart"></i> <span class="like-count">0</span>
+            </button>
             <div class="video-meta">
               <span><i class="fas fa-file-image"></i> JPEG</span>
               <span><i class="fas fa-clock"></i> 99 KB</span>
@@ -574,6 +610,9 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <div class="video-container">
               <img src="/secret/Videos Passwort/Bild Tom.jpeg" alt="Bild Tom" style="width: 100%; height: auto; border-radius: 8px;">
             </div>
+            <button class="like-button" data-filename="Bild Tom.jpeg">
+              <i class="fas fa-heart"></i> <span class="like-count">0</span>
+            </button>
             <div class="video-meta">
               <span><i class="fas fa-file-image"></i> JPEG</span>
               <span><i class="fas fa-clock"></i> 265 KB</span>
@@ -595,6 +634,9 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                 Your browser does not support the video tag.
               </video>
             </div>
+            <button class="like-button" data-filename="Franzosen Tom.mp4">
+              <i class="fas fa-heart"></i> <span class="like-count">0</span>
+            </button>
             <div class="video-meta">
               <span><i class="fas fa-file-video"></i> MP4</span>
               <span><i class="fas fa-clock"></i> 1.3 MB</span>
@@ -613,6 +655,9 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <div class="video-container">
               <img src="/secret/Videos Passwort/Bild Theo guffi.jpeg" alt="Bild Theo guffi" style="width: 100%; height: auto; border-radius: 8px;">
             </div>
+            <button class="like-button" data-filename="Bild Theo guffi.jpeg">
+              <i class="fas fa-heart"></i> <span class="like-count">0</span>
+            </button>
             <div class="video-meta">
               <span><i class="fas fa-file-image"></i> JPEG</span>
               <span><i class="fas fa-clock"></i> 34 KB</span>
@@ -631,6 +676,9 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <div class="video-container">
               <img src="/secret/Videos Passwort/Bild Theo Random.jpeg" alt="Bild Theo Random" style="width: 100%; height: auto; border-radius: 8px;">
             </div>
+            <button class="like-button" data-filename="Bild Theo Random.jpeg">
+              <i class="fas fa-heart"></i> <span class="like-count">0</span>
+            </button>
             <div class="video-meta">
               <span><i class="fas fa-file-image"></i> JPEG</span>
               <span><i class="fas fa-clock"></i> 231 KB</span>
@@ -649,6 +697,9 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <div class="video-container">
               <img src="/secret/Videos Passwort/Bild Theo Schlafen.jpeg" alt="Bild Theo Schlafen" style="width: 100%; height: auto; border-radius: 8px;">
             </div>
+            <button class="like-button" data-filename="Bild Theo Schlafen.jpeg">
+              <i class="fas fa-heart"></i> <span class="like-count">0</span>
+            </button>
             <div class="video-meta">
               <span><i class="fas fa-file-image"></i> JPEG</span>
               <span><i class="fas fa-clock"></i> 139 KB</span>
@@ -667,6 +718,9 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <div class="video-container">
               <img src="/secret/Videos Passwort/Bild Tom klein.jpeg" alt="Bild Tom klein" style="width: 100%; height: auto; border-radius: 8px;">
             </div>
+            <button class="like-button" data-filename="Bild Tom klein.jpeg">
+              <i class="fas fa-heart"></i> <span class="like-count">0</span>
+            </button>
             <div class="video-meta">
               <span><i class="fas fa-file-image"></i> JPEG</span>
               <span><i class="fas fa-clock"></i> 109 KB</span>
@@ -685,6 +739,9 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <div class="video-container">
               <img src="/secret/Videos Passwort/Erik.jpeg" alt="Erik" style="width: 100%; height: auto; border-radius: 8px;">
             </div>
+            <button class="like-button" data-filename="Erik.jpeg">
+              <i class="fas fa-heart"></i> <span class="like-count">0</span>
+            </button>
             <div class="video-meta">
               <span><i class="fas fa-file-image"></i> JPEG</span>
               <span><i class="fas fa-clock"></i> 116 KB</span>
@@ -904,6 +961,78 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
               setTimeout(() => {
                 tiktokLike.classList.remove('liked');
               }, 500);
+            }
+          })
+          .catch(error => console.error('Error liking media:', error));
+        }
+      });
+      
+      // Grid View Like Functionality
+      document.addEventListener('DOMContentLoaded', function() {
+        // Get all like buttons in grid view
+        const likeButtons = document.querySelectorAll('.like-button');
+        let likes = {};
+        
+        // Initialize likes from server
+        fetch('/secret/Tom/get_likes.php')
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              likes = data.likes;
+              updateAllLikeCounts();
+            }
+          })
+          .catch(error => console.error('Error loading likes:', error));
+        
+        // Add event listeners to all like buttons
+        likeButtons.forEach(button => {
+          button.addEventListener('click', function() {
+            const filename = this.getAttribute('data-filename');
+            likeMedia(filename, this);
+          });
+        });
+        
+        // Update all like counts on page load
+        function updateAllLikeCounts() {
+          likeButtons.forEach(button => {
+            const filename = button.getAttribute('data-filename');
+            const likeCountElement = button.querySelector('.like-count');
+            const count = likes[filename] || 0;
+            likeCountElement.textContent = count;
+            
+            // Update button state if liked
+            if (count > 0) {
+              button.classList.add('liked');
+            }
+          });
+        }
+        
+        // Like media function for grid view
+        function likeMedia(filename, button) {
+          // Send like to server
+          fetch('/secret/Tom/like_handler.php', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ filename: filename })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              likes[filename] = data.like_count;
+              
+              // Update button UI
+              const likeCountElement = button.querySelector('.like-count');
+              likeCountElement.textContent = data.like_count;
+              button.classList.add('liked');
+              
+              // Also update TikTok mode if it's active and showing the same media
+              if (document.getElementById('tiktokLikeCount') && 
+                  document.querySelector('#tiktokMediaContainer video')?.src?.includes(filename) || 
+                  document.querySelector('#tiktokMediaContainer img')?.src?.includes(filename)) {
+                document.getElementById('tiktokLikeCount').textContent = data.like_count;
+              }
             }
           })
           .catch(error => console.error('Error liking media:', error));
