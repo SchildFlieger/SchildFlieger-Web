@@ -885,6 +885,10 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
               likes = data.likes;
               updateAllLikeCounts();
               updateTikTokLikeCount();
+              // Also update TikTok like button state for the first media
+              if (mediaFiles.length > 0) {
+                updateTikTokLikeButtonState(mediaFiles[0].filename);
+              }
             } else {
               console.error('Error in likes data:', data.error);
             }
@@ -909,6 +913,10 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             const video = tiktokMediaContainer.querySelector('video');
             if (video) {
               video.pause();
+            }
+            // Reset TikTok like button state
+            if (tiktokLike) {
+              tiktokLike.classList.remove('liked', 'liked-animation');
             }
           });
         }
@@ -937,10 +945,34 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         }
         
         // Double-click to like in TikTok mode
-        if (tiktokMediaContainer) {
-          tiktokMediaContainer.addEventListener('dblclick', function() {
-            likeMediaTikTok(currentIndex);
+        // We'll attach this after loading media since we need to attach to the actual media element
+        function attachDoubleClickHandler() {
+          // Remove any existing double-click handlers to prevent duplicates
+          const existingVideos = tiktokMediaContainer.querySelectorAll('video');
+          const existingImgs = tiktokMediaContainer.querySelectorAll('img');
+          
+          existingVideos.forEach(video => {
+            video.removeEventListener('dblclick', handleDoubleClick);
+            video.addEventListener('dblclick', handleDoubleClick);
           });
+          
+          existingImgs.forEach(img => {
+            img.removeEventListener('dblclick', handleDoubleClick);
+            img.addEventListener('dblclick', handleDoubleClick);
+          });
+        }
+        
+        // Handler function for double-click events
+        function handleDoubleClick(e) {
+          e.preventDefault();
+          // Add visual feedback for double-click
+          if (tiktokLike) {
+            tiktokLike.classList.add('liked-animation');
+            setTimeout(() => {
+              tiktokLike.classList.remove('liked-animation');
+            }, 500);
+          }
+          likeMediaTikTok(currentIndex);
         }
         
         // Grid View Event Listeners
@@ -983,6 +1015,10 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             }
             
             updateTikTokLikeCount();
+            // Update TikTok like button state based on current like count
+            updateTikTokLikeButtonState(media.filename);
+            // Attach double-click handler to the newly loaded media
+            attachDoubleClickHandler();
           }
         }
         
@@ -992,6 +1028,34 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             const media = mediaFiles[currentIndex];
             const count = likes[media.filename] || 0;
             tiktokLikeCount.textContent = count;
+          }
+        }
+        
+        // Update grid view buttons with new like count
+        function updateGridViewButtons(filename, likeCount) {
+          // Find all buttons for this filename
+          const buttons = document.querySelectorAll(`.like-button[data-filename="${filename}"]`);
+          buttons.forEach(button => {
+            const likeCountElement = button.querySelector('.like-count');
+            if (likeCountElement) {
+              likeCountElement.textContent = likeCount;
+            }
+            // Add liked class if count > 0
+            if (likeCount > 0) {
+              button.classList.add('liked');
+            }
+          });
+        }
+        
+        // Update TikTok like button state based on current like count
+        function updateTikTokLikeButtonState(filename) {
+          if (tiktokLike) {
+            const likeCount = likes[filename] || 0;
+            if (likeCount > 0) {
+              tiktokLike.classList.add('liked');
+            } else {
+              tiktokLike.classList.remove('liked');
+            }
           }
         }
         
@@ -1021,19 +1085,35 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
               likes[media.filename] = data.like_count;
               updateTikTokLikeCount();
               
-              // Visual feedback
+              // Visual feedback with animation
               if (tiktokLike) {
+                // Ensure any existing animation is stopped
+                tiktokLike.classList.remove('liked', 'liked-animation');
+                // Trigger reflow to restart animation
+                void tiktokLike.offsetWidth;
+                // Add classes for visual feedback
                 tiktokLike.classList.add('liked');
                 tiktokLike.classList.add('liked-animation');
                 setTimeout(() => {
                   tiktokLike.classList.remove('liked-animation');
                 }, 1000);
+                // Also remove the liked class after a longer time to allow for unliking
+                setTimeout(() => {
+                  tiktokLike.classList.remove('liked');
+                }, 3000);
               }
+              
+              // Also update grid view buttons if they exist on the page
+              updateGridViewButtons(media.filename, data.like_count);
             } else {
               console.error('TikTok mode - Error in like response:', data.error);
             }
           })
-          .catch(error => console.error('TikTok mode - Error liking media:', error));
+          .catch(error => {
+            console.error('TikTok mode - Error liking media:', error);
+            // Show error to user
+            alert('Failed to like media. Please try again.');
+          });
         }
         
         // Grid View Functions
@@ -1093,37 +1173,45 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
               }, 1000);
               
               // Also update TikTok mode if it's active and showing the same media
-              if (tiktokLikeCount) {
+              if (tiktokLikeCount && tiktokContainer && tiktokContainer.style.display !== 'none') {
                 const tiktokVideo = document.querySelector('#tiktokMediaContainer video');
                 const tiktokImg = document.querySelector('#tiktokMediaContainer img');
                 
                 if ((tiktokVideo && tiktokVideo.src && tiktokVideo.src.includes(filename)) || 
                     (tiktokImg && tiktokImg.src && tiktokImg.src.includes(filename))) {
                   tiktokLikeCount.textContent = data.like_count;
+                  // Also update the TikTok like button visual state
+                  if (tiktokLike) {
+                    tiktokLike.classList.add('liked');
+                    // Add animation
+                    tiktokLike.classList.remove('liked-animation');
+                    void tiktokLike.offsetWidth;
+                    tiktokLike.classList.add('liked-animation');
+                    setTimeout(() => {
+                      tiktokLike.classList.remove('liked-animation');
+                    }, 1000);
+                  }
                 }
               }
             } else {
               console.error('Grid view - Error in like response:', data.error);
             }
           })
-          .catch(error => console.error('Grid view - Error liking media:', error));
+          .catch(error => {
+            console.error('Grid view - Error liking media:', error);
+            // Show error to user
+            alert('Failed to like media. Please try again.');
+          });
         }
       }
       
-      // Execute the initialization function
-      // We'll try to execute it immediately, and if that fails, we'll wait for DOMContentLoaded
-      try {
-        if (document.readyState === 'loading') {
-          // DOM is still loading, wait for it to be ready
-          document.addEventListener('DOMContentLoaded', initializeLikeFunctionality);
-        } else {
-          // DOM is already ready, execute immediately
-          initializeLikeFunctionality();
-        }
-      } catch (error) {
-        console.error('Error initializing like functionality:', error);
-        // Fallback to DOMContentLoaded
+      // Execute the initialization function when DOM is ready
+      if (document.readyState === 'loading') {
+        // DOM is still loading, wait for it to be ready
         document.addEventListener('DOMContentLoaded', initializeLikeFunctionality);
+      } else {
+        // DOM is already ready, execute immediately
+        initializeLikeFunctionality();
       }
     </script>
   </body>
