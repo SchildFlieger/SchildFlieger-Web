@@ -1258,29 +1258,19 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                 tiktokLike.classList.remove('liked', 'liked-animation');
                 // Trigger reflow to restart animation
                 void tiktokLike.offsetWidth;
-            // Check if this was a like or unlike action
-                if (data.action === 'liked') {
-                  // Add classes for visual feedback
+                
+                // Add/remove classes based on like count
+                if (data.like_count > 0) {
                   tiktokLike.classList.add('liked');
-                  tiktokLike.classList.add('liked-animation');
-                  setTimeout(() => {
-                    tiktokLike.classList.remove('liked-animation');
-                  }, 1000);
-                  // Also remove the liked class after a longer time to allow for unliking
-                  setTimeout(() => {
-                    tiktokLike.classList.remove('liked');
-                  }, 3000);
                 } else {
-                  // Unlike action - just show a brief animation
-                  tiktokLike.classList.add('liked-animation');
-                  setTimeout(() => {
-                    tiktokLike.classList.remove('liked-animation');
-                    // Remove liked class if count is 0
-                    if (data.like_count === 0) {
-                      tiktokLike.classList.remove('liked');
-                    }
-                  }, 1000);
+                  tiktokLike.classList.remove('liked');
                 }
+                
+                // Add animation
+                tiktokLike.classList.add('liked-animation');
+                setTimeout(() => {
+                  tiktokLike.classList.remove('liked-animation');
+                }, 1000);
               }
               
               // Also update grid view buttons if they exist on the page
