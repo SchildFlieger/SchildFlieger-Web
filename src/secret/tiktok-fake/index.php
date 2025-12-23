@@ -610,10 +610,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <button class="like-button" data-filename="Amena Tom.mp4">
               <i class="fas fa-heart"></i> <span class="like-count">0</span>
             </button>
-            <div class="video-meta">
-              <span><i class="fas fa-file-video"></i> MP4</span>
-              <span><i class="fas fa-clock"></i> 295 KB</span>
-            </div>
+
           </div>
 
           <!-- Image 1 -->
@@ -631,10 +628,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <button class="like-button" data-filename="Bild Theo.jpeg">
               <i class="fas fa-heart"></i> <span class="like-count">0</span>
             </button>
-            <div class="video-meta">
-              <span><i class="fas fa-file-image"></i> JPEG</span>
-              <span><i class="fas fa-clock"></i> 99 KB</span>
-            </div>
+
           </div>
 
           <!-- Image 2 -->
@@ -652,10 +646,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <button class="like-button" data-filename="Bild Tom.jpeg">
               <i class="fas fa-heart"></i> <span class="like-count">0</span>
             </button>
-            <div class="video-meta">
-              <span><i class="fas fa-file-image"></i> JPEG</span>
-              <span><i class="fas fa-clock"></i> 265 KB</span>
-            </div>
+
           </div>
 
           <!-- Video 2 -->
@@ -676,10 +667,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <button class="like-button" data-filename="Franzosen Tom.mp4">
               <i class="fas fa-heart"></i> <span class="like-count">0</span>
             </button>
-            <div class="video-meta">
-              <span><i class="fas fa-file-video"></i> MP4</span>
-              <span><i class="fas fa-clock"></i> 1.3 MB</span>
-            </div>
+
           </div>
 
           <!-- Image 3 -->
@@ -697,10 +685,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <button class="like-button" data-filename="Bild Theo guffi.jpeg">
               <i class="fas fa-heart"></i> <span class="like-count">0</span>
             </button>
-            <div class="video-meta">
-              <span><i class="fas fa-file-image"></i> JPEG</span>
-              <span><i class="fas fa-clock"></i> 34 KB</span>
-            </div>
+
           </div>
 
           <!-- Image 4 -->
@@ -718,10 +703,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <button class="like-button" data-filename="Bild Theo Random.jpeg">
               <i class="fas fa-heart"></i> <span class="like-count">0</span>
             </button>
-            <div class="video-meta">
-              <span><i class="fas fa-file-image"></i> JPEG</span>
-              <span><i class="fas fa-clock"></i> 231 KB</span>
-            </div>
+
           </div>
 
           <!-- Image 5 -->
@@ -739,10 +721,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <button class="like-button" data-filename="Bild Theo Schlafen.jpeg">
               <i class="fas fa-heart"></i> <span class="like-count">0</span>
             </button>
-            <div class="video-meta">
-              <span><i class="fas fa-file-image"></i> JPEG</span>
-              <span><i class="fas fa-clock"></i> 139 KB</span>
-            </div>
+
           </div>
 
           <!-- Image 6 -->
@@ -760,10 +739,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <button class="like-button" data-filename="Bild Tom klein.jpeg">
               <i class="fas fa-heart"></i> <span class="like-count">0</span>
             </button>
-            <div class="video-meta">
-              <span><i class="fas fa-file-image"></i> JPEG</span>
-              <span><i class="fas fa-clock"></i> 109 KB</span>
-            </div>
+
           </div>
 
           <!-- Image 7 -->
@@ -781,10 +757,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <button class="like-button" data-filename="Erik.jpeg">
               <i class="fas fa-heart"></i> <span class="like-count">0</span>
             </button>
-            <div class="video-meta">
-              <span><i class="fas fa-file-image"></i> JPEG</span>
-              <span><i class="fas fa-clock"></i> 116 KB</span>
-            </div>
+
           </div>
         </div>
       </div>
