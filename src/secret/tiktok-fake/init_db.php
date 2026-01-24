@@ -10,12 +10,28 @@ try {
     // Create table for storing likes
     $sql = "CREATE TABLE IF NOT EXISTS media_likes (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        media_filename VARCHAR(255) NOT NULL UNIQUE,
+        media_filename VARCHAR(255) NOT NULL,
         like_count INT DEFAULT 0,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        UNIQUE KEY unique_media (media_filename),
         INDEX idx_media_filename (media_filename)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+    
+    $pdo->exec($sql);
+    
+    // Create table for tracking individual likes by user identifier
+    $user_likes_sql = "CREATE TABLE IF NOT EXISTS user_media_likes (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        media_filename VARCHAR(255) NOT NULL,
+        user_identifier VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE KEY unique_user_media (media_filename, user_identifier),
+        INDEX idx_media_filename (media_filename),
+        INDEX idx_user_identifier (user_identifier)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
+    
+    $pdo->exec($user_likes_sql);
     
     $pdo->exec($sql);
     echo "Table creation SQL executed.\n";

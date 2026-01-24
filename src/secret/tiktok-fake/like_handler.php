@@ -34,61 +34,61 @@ if (empty($filename)) {
     exit();
 }
 
+// Generate a user identifier based on IP and user agent to distinguish between different users/devices
+$userIdentifier = hash('sha256', $_SERVER['REMOTE_ADDR'] . '|' . ($_SERVER['HTTP_USER_AGENT'] ?? 'unknown'));
+
 try {
-    // First, get the current like count
-    error_log("Fetching current like count for: " . $filename);
-    $stmt = $pdo->prepare("SELECT like_count FROM media_likes WHERE media_filename = ?");
-    $stmt->execute([$filename]);
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    // Check if this user has already liked this media
+    $stmt = $pdo->prepare("SELECT id FROM user_media_likes WHERE media_filename = ? AND user_identifier = ?");
+    $stmt->execute([$filename, $userIdentifier]);
+    $existingLike = $stmt->fetch(PDO::FETCH_ASSOC);
     
-    if ($row) {
-        $currentCount = (int)$row['like_count'];
-        error_log("Current like count for " . $filename . ": " . $currentCount);
+    if ($existingLike) {
+        // User already liked this media, so unlike it
+        $stmt = $pdo->prepare("DELETE FROM user_media_likes WHERE media_filename = ? AND user_identifier = ?");
+        $stmt->execute([$filename, $userIdentifier]);
         
-        // Toggle like: if current count is > 0, decrease by 1 (unlike), otherwise increase by 1 (like)
-        $newCount = ($currentCount > 0) ? ($currentCount - 1) : ($currentCount + 1);
+        // Decrease the total like count
+        $stmt = $pdo->prepare("UPDATE media_likes SET like_count = GREATEST(0, like_count - 1) WHERE media_filename = ?");
+        $stmt->execute([$filename]);
         
-        error_log("Updating like count for " . $filename . " from " . $currentCount . " to " . $newCount);
+        // Get the new like count
+        $stmt = $pdo->prepare("SELECT like_count FROM media_likes WHERE media_filename = ?");
+        $stmt->execute([$filename]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $newCount = $result ? (int)$result['like_count'] : 0;
         
-        // Update like count for the specified media file
-        $stmt = $pdo->prepare("UPDATE media_likes SET like_count = ? WHERE media_filename = ?");
-        $result = $stmt->execute([$newCount, $filename]);
+        error_log("User $userIdentifier unliked media $filename, new count: $newCount");
         
-        error_log("Update query executed, rows affected: " . $stmt->rowCount());
-        
-        if ($stmt->rowCount() > 0) {
-            // Successfully updated
-            error_log("Successfully updated like count for " . $filename . ": " . $newCount);
-            echo json_encode([
-                'success' => true,
-                'like_count' => $newCount,
-                'filename' => $filename,
-                'action' => ($newCount > $currentCount) ? 'liked' : 'unliked'
-            ]);
-        } else {
-            error_log("Failed to update like count for " . $filename);
-            http_response_code(500);
-            echo json_encode(['error' => 'Failed to update like count']);
-        }
+        echo json_encode([
+            'success' => true,
+            'like_count' => $newCount,
+            'filename' => $filename,
+            'action' => 'unliked'
+        ]);
     } else {
-        // No existing record found, insert a new record with 1 like (first like)
-        error_log("No existing record found, inserting new record for: " . $filename . " with 1 like");
-        $stmt = $pdo->prepare("INSERT INTO media_likes (media_filename, like_count) VALUES (?, 1)");
-        $insertResult = $stmt->execute([$filename]);
+        // User hasn't liked this media yet, so like it
+        $stmt = $pdo->prepare("INSERT INTO user_media_likes (media_filename, user_identifier) VALUES (?, ?) ON DUPLICATE KEY UPDATE created_at = CURRENT_TIMESTAMP");
+        $stmt->execute([$filename, $userIdentifier]);
         
-        if ($insertResult) {
-            error_log("Successfully inserted new record for " . $filename . " with 1 like");
-            echo json_encode([
-                'success' => true,
-                'like_count' => 1,
-                'filename' => $filename,
-                'action' => 'liked'
-            ]);
-        } else {
-            error_log("Failed to insert new record for " . $filename);
-            http_response_code(500);
-            echo json_encode(['error' => 'Failed to insert new record']);
-        }
+        // Increase the total like count
+        $stmt = $pdo->prepare("INSERT INTO media_likes (media_filename, like_count) VALUES (?, 1) ON DUPLICATE KEY UPDATE like_count = like_count + 1");
+        $stmt->execute([$filename]);
+        
+        // Get the new like count
+        $stmt = $pdo->prepare("SELECT like_count FROM media_likes WHERE media_filename = ?");
+        $stmt->execute([$filename]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $newCount = $result ? (int)$result['like_count'] : 1;
+        
+        error_log("User $userIdentifier liked media $filename, new count: $newCount");
+        
+        echo json_encode([
+            'success' => true,
+            'like_count' => $newCount,
+            'filename' => $filename,
+            'action' => 'liked'
+        ]);
     }
 } catch(PDOException $e) {
     error_log("Database error in like_handler.php: " . $e->getMessage());
