@@ -68,12 +68,15 @@ try {
         ]);
     } else {
         // User hasn't liked this media yet, so like it
-        $stmt = $pdo->prepare("INSERT INTO user_media_likes (media_filename, user_identifier) VALUES (?, ?) ON DUPLICATE KEY UPDATE created_at = CURRENT_TIMESTAMP");
+        $stmt = $pdo->prepare("INSERT IGNORE INTO user_media_likes (media_filename, user_identifier) VALUES (?, ?)");
         $stmt->execute([$filename, $userIdentifier]);
         
-        // Increase the total like count
-        $stmt = $pdo->prepare("INSERT INTO media_likes (media_filename, like_count) VALUES (?, 1) ON DUPLICATE KEY UPDATE like_count = like_count + 1");
-        $stmt->execute([$filename]);
+        // Only increment if a new record was actually inserted
+        if ($stmt->rowCount() > 0) {
+            // Increase the total like count
+            $stmt = $pdo->prepare("INSERT INTO media_likes (media_filename, like_count) VALUES (?, 1) ON DUPLICATE KEY UPDATE like_count = like_count + 1");
+            $stmt->execute([$filename]);
+        }
         
         // Get the new like count
         $stmt = $pdo->prepare("SELECT like_count FROM media_likes WHERE media_filename = ?");
